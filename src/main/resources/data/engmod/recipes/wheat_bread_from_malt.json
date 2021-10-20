@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "#",
+        "A"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "item": "engmod:malt"
+        },
+        "A":
+        {
+            "item": "minecraft:wheat"
+        }
+    },
+    "result":
+    {
+        "item": "minecraft:bread",
+        "count": 2
+    }
+}

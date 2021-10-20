@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:block/cross",
+	"textures": 
+	{
+		"cross": "engmod:block/hop_bush_stage_1"
+	}
+}

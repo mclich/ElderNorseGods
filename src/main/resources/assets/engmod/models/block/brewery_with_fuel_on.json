@@ -1,0 +1,7 @@
+{
+	"parent": "engmod:block/brewery_with_fuel",
+	"textures":
+	{
+		"0": "engmod:block/brewery_with_fuel_on"
+	}
+}

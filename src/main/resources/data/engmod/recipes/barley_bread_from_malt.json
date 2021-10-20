@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "#",
+        "A"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "item": "engmod:malt"
+        },
+        "A":
+        {
+            "item": "engmod:barley"
+        }
+    },
+    "result":
+    {
+        "item": "engmod:barley_bread",
+        "count": 2
+    }
+}

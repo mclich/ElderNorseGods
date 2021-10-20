@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:block/crop",
+	"textures": 
+	{
+		"crop": "engmod:block/barley_crop_stage_2"
+	}
+}

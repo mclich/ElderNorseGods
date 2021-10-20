@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        " # ",
+        "###",
+        " A "
+    ],
+    "key":
+    {
+        "#":
+        {
+            "tag": "forge:gems/diamond"
+        },
+        "A":
+        {
+            "item": "minecraft:stick"
+        }
+    },
+    "result":
+    {
+        "item": "engmod:custom_sword",
+        "count": 1
+    }
+}

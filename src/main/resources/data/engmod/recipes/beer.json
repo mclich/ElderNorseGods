@@ -1,0 +1,14 @@
+{
+	"type": "engmod:brewing",
+	"bottle":
+	{
+		"item": "engmod:malt"
+	},
+	"ingredient":
+	{
+		"item": "engmod:hop"
+	},
+	"result": "engmod:beer",
+	"experience": 0.7,
+	"brew_time": 400
+}

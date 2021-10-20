@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients":
+    [
+        {
+            "item": "engmod:custom_block"
+        }
+    ],
+    "result":
+    {
+        "item": "engmod:custom_material",
+        "count": 9
+    }
+}

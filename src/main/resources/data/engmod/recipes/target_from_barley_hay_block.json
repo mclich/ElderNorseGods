@@ -1,0 +1,25 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern":
+	[
+		" # ",
+		"#A#",
+		" # "
+	],
+	"key":
+	{
+		"#":
+		{
+			"item": "minecraft:redstone"
+		},
+		"A":
+		{
+			"item": "engmod:barley_hay_block"
+		}
+	},
+	"result":
+	{
+		"item": "minecraft:target",
+		"count": 1
+	}
+}

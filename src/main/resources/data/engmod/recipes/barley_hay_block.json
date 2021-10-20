@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "###",
+        "###",
+        "###"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "item": "engmod:barley"
+        }
+    },
+    "result":
+    {
+        "item": "engmod:barley_hay_block",
+        "count": 1
+    }
+}

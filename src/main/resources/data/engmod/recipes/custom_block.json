@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "###",
+        "###",
+        "###"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "item": "engmod:custom_material"
+        }
+    },
+    "result":
+    {
+        "item": "engmod:custom_block",
+        "count": 1
+    }
+}

@@ -1,0 +1,21 @@
+{
+	"variants":
+	{
+		"age=0":
+		{
+			"model": "engmod:block/hop_bush_stage_0"
+		},
+		"age=1":
+		{
+			"model": "engmod:block/hop_bush_stage_1"
+		},
+		"age=2":
+		{
+			"model": "engmod:block/hop_bush_stage_2"
+		},
+		"age=3":
+		{
+			"model": "engmod:block/hop_bush_stage_3"
+		}
+	}
+}

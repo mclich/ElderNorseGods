@@ -1,0 +1,33 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "#A#",
+        "#B#",
+        "CCC"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "tag": "minecraft:logs"
+        },
+        "A":
+        {
+            "item": "minecraft:glass_bottle"
+        },
+        "B":
+        {
+            "item": "minecraft:furnace"
+        },
+        "C":
+        {
+            "item": "minecraft:cobblestone"
+        }
+    },
+    "result":
+    {
+        "item": "engmod:brewery",
+        "count": 1
+    }
+}

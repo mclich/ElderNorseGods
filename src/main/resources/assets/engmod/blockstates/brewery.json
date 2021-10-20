@@ -1,0 +1,25 @@
+{
+	"forge_marker": 1,
+	"variants":
+	{
+		"facing=north,has_fuel=false,lit=false":	{ "model": "engmod:block/brewery"},
+		"facing=east,has_fuel=false,lit=false":		{ "model": "engmod:block/brewery", "y": 90 },
+        "facing=south,has_fuel=false,lit=false":	{ "model": "engmod:block/brewery", "y": 180 },
+        "facing=west,has_fuel=false,lit=false":		{ "model": "engmod:block/brewery", "y": 270 },
+        
+        "facing=north,has_fuel=true,lit=false":	{ "model": "engmod:block/brewery_with_fuel"},
+		"facing=east,has_fuel=true,lit=false":	{ "model": "engmod:block/brewery_with_fuel", "y": 90 },
+        "facing=south,has_fuel=true,lit=false":	{ "model": "engmod:block/brewery_with_fuel", "y": 180 },
+        "facing=west,has_fuel=true,lit=false":	{ "model": "engmod:block/brewery_with_fuel", "y": 270 },
+        
+        "facing=north,has_fuel=true,lit=true":	{ "model": "engmod:block/brewery_with_fuel_on"},
+		"facing=east,has_fuel=true,lit=true":	{ "model": "engmod:block/brewery_with_fuel_on", "y": 90 },
+        "facing=south,has_fuel=true,lit=true":	{ "model": "engmod:block/brewery_with_fuel_on", "y": 180 },
+        "facing=west,has_fuel=true,lit=true":	{ "model": "engmod:block/brewery_with_fuel_on", "y": 270 },
+        
+        "facing=north,has_fuel=false,lit=true":	{ "model": "engmod:block/brewery"},
+        "facing=east,has_fuel=false,lit=true":	{ "model": "engmod:block/brewery", "y": 90 },
+        "facing=south,has_fuel=false,lit=true":	{ "model": "engmod:block/brewery", "y": 180 },
+		"facing=west,has_fuel=false,lit=true":	{ "model": "engmod:block/brewery", "y": 270 }
+	}
+}

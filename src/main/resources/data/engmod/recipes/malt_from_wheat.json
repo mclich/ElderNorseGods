@@ -1,0 +1,16 @@
+{
+	"type": "engmod:brewing",
+	"bottle":
+	{
+		"type": "forge:nbt",
+		"item": "minecraft:potion",
+		"nbt": "{Potion:'minecraft:water'}"
+	},
+	"ingredient":
+	{
+		"item": "minecraft:wheat"
+	},
+	"result": "engmod:malt",
+	"experience": 0.7,
+	"brew_time": 300
+}

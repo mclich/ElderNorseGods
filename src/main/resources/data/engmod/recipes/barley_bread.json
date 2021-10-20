@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "###"
+    ],
+    "key":
+    {
+        "#":
+        {
+            "item": "engmod:barley"
+        }
+    },
+    "result":
+    {
+    	"item": "engmod:barley_bread",
+        "count": 1
+    }
+}
