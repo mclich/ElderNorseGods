@@ -34,7 +34,7 @@ public class DrunkennessEffect extends Effect
 	public static EffectInstance getInstance()
 	{
 		//new EffectInstance(Effects.DIG_SLOWDOWN, 1200, 3, true, false, false)
-		return new EffectInstance(ENGEffects.DRUNKENNESS.get(), 1200, 0, true, true);
+		return new EffectInstance(ENGEffects.DRUNKENNESS.get(), 1260, 0, true, true);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class DrunkennessEffect extends Effect
 		ThreadLocalRandom random=ThreadLocalRandom.current();
 		if(player.hasEffect(ENGEffects.DRUNKENNESS.get())&&random.nextInt(0, 6)<1)
 	    {
-			int impulse=50;
+			int impulse=150;
 			MovementInput moves=event.getMovementInput();
 			if(moves.up||moves.down) moves.leftImpulse+=random.nextInt(-impulse, impulse+1);
 			if(moves.left||moves.right) moves.forwardImpulse+=random.nextInt(-impulse, impulse+1);
