@@ -4,8 +4,8 @@ import java.util.Optional;
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.network.server.ItemActivationPacket;
 import com.github.mclich.engmod.network.server.SpawnParticlesPacket;
-import com.github.mclich.engmod.util.ENGItems;
-import com.github.mclich.engmod.util.ENGTabs;
+import com.github.mclich.engmod.register.ENGItems;
+import com.github.mclich.engmod.register.ENGTabs;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -53,24 +53,18 @@ public class TotemOfAbyssItem extends Item
 		}
 	}
 	
-	private static float getResRot(BlockPos blockSpawnPos, Vector3d playerSpawnPos)
-	{
-		Vector3d vector=Vector3d.atBottomCenterOf(blockSpawnPos).subtract(playerSpawnPos).normalize();
-        return (float)MathHelper.wrapDegrees(MathHelper.atan2(vector.z, vector.x)*(double)(180F/(float)Math.PI)-90D);
-	}
-	
 	@Override
 	public void inventoryTick(ItemStack itemStack, World world, Entity entity, int tick, boolean flag)
 	{
 		if(!world.isClientSide()&&entity instanceof PlayerEntity&&entity.getY()<0&&((PlayerEntity)entity).getLastDamageSource()==DamageSource.OUT_OF_WORLD)
 		{
 			ServerPlayerEntity player=(ServerPlayerEntity)entity;
-			if(player.getMainHandItem().getItem()==this) this.activateTotem((ServerWorld)world, player, player.getMainHandItem());
-			else if(player.getOffhandItem().getItem()==this) this.activateTotem((ServerWorld)world, player, player.getOffhandItem());
+			if(player.getMainHandItem().getItem()==this) TotemOfAbyssItem.activateTotem((ServerWorld)world, player, player.getMainHandItem());
+			else if(player.getOffhandItem().getItem()==this) TotemOfAbyssItem.activateTotem((ServerWorld)world, player, player.getOffhandItem());
 		}
 	}
 	
-	private void activateTotem(ServerWorld world, ServerPlayerEntity player, ItemStack itemStack)
+	private static void activateTotem(ServerWorld world, ServerPlayerEntity player, ItemStack itemStack)
 	{
 		player.fallDistance=0F;
 		ItemStack totem=itemStack.copy();
@@ -111,5 +105,11 @@ public class TotemOfAbyssItem extends Item
 		ElderNorseGods.getChannel().send(PacketDistributor.TRACKING_CHUNK.with(()->tmp.getChunkAt(player.blockPosition())), new SpawnParticlesPacket(ParticleTypes.PORTAL, player.getUUID(), 30));
 		world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 1F, 1F);
 		//player.playSound(SoundEvents.TOTEM_USE, 1F, 1F);
+	}
+	
+	private static float getResRot(BlockPos blockSpawnPos, Vector3d playerSpawnPos)
+	{
+		Vector3d vector=Vector3d.atBottomCenterOf(blockSpawnPos).subtract(playerSpawnPos).normalize();
+        return (float)MathHelper.wrapDegrees(MathHelper.atan2(vector.z, vector.x)*(double)(180F/(float)Math.PI)-90D);
 	}
 }

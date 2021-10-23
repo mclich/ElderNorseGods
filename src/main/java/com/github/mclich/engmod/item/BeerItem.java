@@ -1,7 +1,8 @@
 package com.github.mclich.engmod.item;
 
 import com.github.mclich.engmod.effect.DrunkennessEffect;
-import com.github.mclich.engmod.util.ENGTabs;
+import com.github.mclich.engmod.register.ENGTabs;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;

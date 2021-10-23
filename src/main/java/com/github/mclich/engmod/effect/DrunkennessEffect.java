@@ -2,7 +2,7 @@ package com.github.mclich.engmod.effect;
 
 import java.util.concurrent.ThreadLocalRandom;
 import com.github.mclich.engmod.ElderNorseGods;
-import com.github.mclich.engmod.util.ENGEffects;
+import com.github.mclich.engmod.register.ENGEffects;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;

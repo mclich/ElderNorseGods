@@ -1,9 +1,10 @@
 package com.github.mclich.engmod.recipe;
 
 import com.github.mclich.engmod.entity.tile.BreweryTileEntity;
-import com.github.mclich.engmod.util.ENGBlocks;
-import com.github.mclich.engmod.util.ENGRecipeTypes;
-import com.github.mclich.engmod.util.ENGSerializers;
+import com.github.mclich.engmod.register.ENGBlocks;
+import com.github.mclich.engmod.register.ENGRecipeTypes;
+import com.github.mclich.engmod.register.ENGSerializers;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -98,6 +99,6 @@ public class BrewingRecipe implements IRecipe<BreweryTileEntity>
 	@Override
 	public IRecipeSerializer<?> getSerializer()
 	{
-		return ENGSerializers.BREWING_SERIALIZER.get();
+		return ENGSerializers.BREWERY_SERIALIZER.get();
 	}
 }

@@ -17,6 +17,7 @@
 	"container.engmod.brewery": "Пивоварня",
 	"effect.engmod.drunkenness": "Опьянение",
 	"entity.engmod.valkyrie_entity": "Валькирия",
+	"enchantment.engmod.vein_miner": "Добыча жилы",
 	"itemGroup.engmod_combat_tab": "ENG: Оружие и доспехи",
 	"itemGroup.engmod_materials_tab": "ENG: Материалы",
 	"itemGroup.engmod_blocks_tab": "ENG: Блоки",

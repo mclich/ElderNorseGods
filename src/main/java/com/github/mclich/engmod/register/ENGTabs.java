@@ -1,7 +1,9 @@
-package com.github.mclich.engmod.util;
+package com.github.mclich.engmod.register;
 
 import java.util.Collections;
-import com.github.mclich.engmod.util.ENGItems.EggHandler;
+
+import com.github.mclich.engmod.register.ENGItems.EggHandler;
+
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;

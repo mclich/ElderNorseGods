@@ -1,6 +1,7 @@
 package com.github.mclich.engmod.item;
 
-import com.github.mclich.engmod.util.ENGTabs;
+import com.github.mclich.engmod.register.ENGTabs;
+
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.Item;
 import net.minecraft.item.SwordItem;

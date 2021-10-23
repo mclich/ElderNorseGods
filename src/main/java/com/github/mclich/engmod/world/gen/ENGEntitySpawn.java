@@ -1,7 +1,8 @@
 package com.github.mclich.engmod.world.gen;
 
 import com.github.mclich.engmod.ElderNorseGods;
-import com.github.mclich.engmod.util.ENGEntities;
+import com.github.mclich.engmod.register.ENGEntities;
+
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.MobSpawnInfo;

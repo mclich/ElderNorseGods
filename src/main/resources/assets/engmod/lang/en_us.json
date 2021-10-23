@@ -17,6 +17,7 @@
 	"container.engmod.brewery": "Brewery",
 	"effect.engmod.drunkenness": "Drunkenness",
 	"entity.engmod.valkyrie_entity": "Valkyrie",
+	"enchantment.engmod.vein_miner": "Vein Miner",
 	"itemGroup.engmod_combat_tab": "ENG: Combat",
 	"itemGroup.engmod_materials_tab": "ENG: Materials",
 	"itemGroup.engmod_blocks_tab": "ENG: Blocks",

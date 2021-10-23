@@ -1,6 +1,7 @@
 package com.github.mclich.engmod.item;
 
-import com.github.mclich.engmod.util.ENGTabs;
+import com.github.mclich.engmod.register.ENGTabs;
+
 import net.minecraft.item.Item;
 
 public class MaltItem extends Item

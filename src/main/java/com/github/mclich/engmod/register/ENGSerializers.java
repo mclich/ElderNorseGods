@@ -1,4 +1,4 @@
-package com.github.mclich.engmod.util;
+package com.github.mclich.engmod.register;
 
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.recipe.BrewingRecipe;
@@ -12,5 +12,5 @@ public abstract class ENGSerializers
 {
 	public static final DeferredRegister<IRecipeSerializer<?>> SERIALIZERS=DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, ElderNorseGods.MOD_ID);
 	
-	public static final RegistryObject<BrewingRecipeSerializer> BREWING_SERIALIZER=ENGSerializers.SERIALIZERS.register(BrewingRecipe.ID, ()->new BrewingRecipeSerializer());
+	public static final RegistryObject<IRecipeSerializer<?>> BREWERY_SERIALIZER=ENGSerializers.SERIALIZERS.register(BrewingRecipe.ID, ()->new BrewingRecipeSerializer());
 }

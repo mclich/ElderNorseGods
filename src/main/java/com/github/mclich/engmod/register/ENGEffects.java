@@ -1,4 +1,4 @@
-package com.github.mclich.engmod.util;
+package com.github.mclich.engmod.register;
 
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.effect.DrunkennessEffect;
@@ -11,5 +11,5 @@ public abstract class ENGEffects
 {
 	public static final DeferredRegister<Effect> EFFECTS=DeferredRegister.create(ForgeRegistries.POTIONS, ElderNorseGods.MOD_ID);
 	
-	public static final RegistryObject<DrunkennessEffect> DRUNKENNESS=ENGEffects.EFFECTS.register(DrunkennessEffect.ID, DrunkennessEffect::new);
+	public static final RegistryObject<Effect> DRUNKENNESS=ENGEffects.EFFECTS.register(DrunkennessEffect.ID, DrunkennessEffect::new);
 }

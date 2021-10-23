@@ -1,4 +1,4 @@
-package com.github.mclich.engmod.util;
+package com.github.mclich.engmod.register;
 
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.client.gui.screen.BreweryScreen;

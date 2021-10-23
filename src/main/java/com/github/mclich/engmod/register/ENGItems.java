@@ -1,4 +1,4 @@
-package com.github.mclich.engmod.util;
+package com.github.mclich.engmod.register;
 
 import java.util.Map;
 import com.github.mclich.engmod.ElderNorseGods;
