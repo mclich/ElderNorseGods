@@ -10,6 +10,12 @@
 					"type": "minecraft:item",
 					"name": "engmod:brewery"
 				}
+			],
+			"conditions":
+			[
+				{
+					"condition": "minecraft:survives_explosion"
+				}
 			]
 		}
 	]

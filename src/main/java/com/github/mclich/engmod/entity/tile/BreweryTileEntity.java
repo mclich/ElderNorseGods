@@ -299,4 +299,11 @@ public class BreweryTileEntity extends LockableTileEntity implements ITickableTi
 		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return this.itemsHandler.cast();
 		return super.getCapability(cap, facing);
 	}
+	
+	@Override
+	protected void invalidateCaps()
+	{
+		super.invalidateCaps();
+		this.itemsHandler.invalidate();
+	}
 }

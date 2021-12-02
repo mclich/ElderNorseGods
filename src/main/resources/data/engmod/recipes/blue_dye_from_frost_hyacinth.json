@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients":
+    [
+        {
+            "item": "engmod:frost_hyacinth"
+        }
+    ],
+    "result":
+    {
+        "item": "minecraft:blue_dye",
+        "count": 1
+    }
+}

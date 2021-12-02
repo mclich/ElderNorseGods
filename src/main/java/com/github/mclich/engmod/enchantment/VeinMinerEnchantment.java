@@ -6,10 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.PickaxeItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Tags.Blocks;
@@ -24,7 +22,7 @@ public class VeinMinerEnchantment extends Enchantment
 	
 	public VeinMinerEnchantment()
 	{
-		super(Rarity.RARE, EnchantmentType.create("pickaxe", item->item instanceof PickaxeItem), new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(Rarity.RARE, ENGEnchantments.Types.PICKAXE_ONLY, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
 	
 	@SubscribeEvent
@@ -38,7 +36,6 @@ public class VeinMinerEnchantment extends Enchantment
 	
 	private static void mineVein(ServerPlayerEntity player, World world, BlockPos startPos, BlockState blockState, Block ore)
 	{
-		ElderNorseGods.LOGGER.info("mineVein");
 		if(player.gameMode.isSurvival())
 		{
 			blockState.getBlock().playerDestroy(world, player, startPos, blockState, null, player.getMainHandItem());

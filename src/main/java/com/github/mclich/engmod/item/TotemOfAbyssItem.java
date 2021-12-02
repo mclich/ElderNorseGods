@@ -2,8 +2,9 @@ package com.github.mclich.engmod.item;
 
 import java.util.Optional;
 import com.github.mclich.engmod.ElderNorseGods;
-import com.github.mclich.engmod.network.server.ItemActivationPacket;
-import com.github.mclich.engmod.network.server.SpawnParticlesPacket;
+import com.github.mclich.engmod.network.NetworkHandler;
+import com.github.mclich.engmod.network.packet.ItemActivationPacket;
+import com.github.mclich.engmod.network.packet.SpawnParticlesPacket;
 import com.github.mclich.engmod.register.ENGItems;
 import com.github.mclich.engmod.register.ENGTabs;
 import net.minecraft.block.Blocks;
@@ -27,7 +28,6 @@ import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 @EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=EventBusSubscriber.Bus.FORGE)
 public class TotemOfAbyssItem extends Item
@@ -100,9 +100,8 @@ public class TotemOfAbyssItem extends Item
 				player.connection.send(new SChangeGameStatePacket(SChangeGameStatePacket.NO_RESPAWN_BLOCK_AVAILABLE, 0F));
 			}
 		}
-		final ServerWorld tmp=world;
-		ElderNorseGods.getChannel().send(PacketDistributor.PLAYER.with(()->player), new ItemActivationPacket(totem));
-		ElderNorseGods.getChannel().send(PacketDistributor.TRACKING_CHUNK.with(()->tmp.getChunkAt(player.blockPosition())), new SpawnParticlesPacket(ParticleTypes.PORTAL, player.getUUID(), 30));
+		NetworkHandler.sendToPlayer(player, new ItemActivationPacket(totem));
+		NetworkHandler.sendToTrackingEntity(player, new SpawnParticlesPacket(ParticleTypes.PORTAL, player.getUUID(), 30));
 		world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 1F, 1F);
 		//player.playSound(SoundEvents.TOTEM_USE, 1F, 1F);
 	}

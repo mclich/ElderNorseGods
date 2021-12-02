@@ -10,6 +10,12 @@
 					"type": "minecraft:item",
 					"name": "engmod:barley_hay_block"
 				}
+			],
+			"conditions":
+			[
+				{
+					"condition": "minecraft:survives_explosion"
+				}
 			]
 		}
 	]

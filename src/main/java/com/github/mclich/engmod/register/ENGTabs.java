@@ -1,18 +1,24 @@
 package com.github.mclich.engmod.register;
 
 import java.util.Collections;
-
-import com.github.mclich.engmod.register.ENGItems.EggHandler;
-
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
+import com.github.mclich.engmod.register.ENGItems.EggHandler;
 
 public abstract class ENGTabs
 {
+	private static final Comparator<ItemStack> NAME_COMPARATOR=(is1, is2)->is1.getItem().getDescriptionId().compareTo(is2.getItem().getDescriptionId());
+	private static final Comparator<ItemStack> FOOD_COMPARATOR=(is1, is2)->Integer.compare(is2.getItem().getFoodProperties().getNutrition(), is1.getItem().getFoodProperties().getNutrition());
 	private static final int DELAY=3*20;
 	
-	public static final ItemGroup COMBAT=new ItemGroup("engmod_combat_tab")
+	public static final ItemGroup COMBAT=new ItemGroup("engmod.combat")
 	{
 		@Override
 		public ItemStack makeIcon()
@@ -21,7 +27,32 @@ public abstract class ENGTabs
 		}
 	};
 	
-	public static final ItemGroup MATERIALS=new ItemGroup("engmod_materials_tab")
+	public static final ItemGroup TOOLS=new ItemGroup("engmod.tools")
+	{
+		@Override
+		public ItemStack makeIcon()
+		{
+			return new ItemStack(Items.ENCHANTED_BOOK);
+		}
+		
+		@Override
+		public boolean hasEnchantmentCategory(EnchantmentType type)
+		{
+			return super.hasEnchantmentCategory(type)||type==ENGEnchantments.Types.PICKAXE_ONLY;
+		}
+
+		@Override
+		public EnchantmentType[] getEnchantmentCategories()
+		{
+			EnchantmentType[] current=super.getEnchantmentCategories();
+			EnchantmentType[] result=new EnchantmentType[current.length+1];
+			System.arraycopy(current, 0, result, 0, current.length);
+			result[current.length]=ENGEnchantments.Types.PICKAXE_ONLY;
+			return result;
+		}
+	};
+	
+	public static final ItemGroup MATERIALS=new ItemGroup("engmod.materials")
 	{
 		@Override
 		public ItemStack makeIcon()
@@ -30,7 +61,7 @@ public abstract class ENGTabs
 		}
 	};
 	
-	public static final ItemGroup BLOCKS=new ItemGroup("engmod_blocks_tab")
+	public static final ItemGroup BLOCKS=new ItemGroup("engmod.blocks")
 	{
 		private int counter=-1;
 		
@@ -43,25 +74,22 @@ public abstract class ENGTabs
 		@Override
 		public ItemStack getIconItem()
 		{
-			counter++;
-			if(counter>=ENGTabs.DELAY*3) counter=0;
-			if(counter>=0&&counter<ENGTabs.DELAY) return new ItemStack(ENGItems.BREWERY_ITEM.get());
-			else if(counter>=ENGTabs.DELAY&&counter<ENGTabs.DELAY*2) return new ItemStack(ENGItems.BARLEY_HAY_BLOCK_ITEM.get());
-			else if(counter>=ENGTabs.DELAY*2&&counter<ENGTabs.DELAY*3) return new ItemStack(ENGItems.CUSTOM_BLOCK_ITEM.get());
-			return this.makeIcon();
+			this.counter++;
+			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(r->r.get()).collect(Collectors.toList());
+			if(this.counter>=tabItems.size()*ENGTabs.DELAY) this.counter=0;
+			return ENGTabs.currentIcon(this, tabItems, this.counter);
 		}
 		
-		/*
 		@Override
 		public void fillItemList(NonNullList<ItemStack> items)
 		{
 			super.fillItemList(items);
-			Collections.sort(items, (itemStack1, itemStack2)->Float.compare(((BlockItem)itemStack1.getItem()).getBlock().getStateForPlacement(null).getDestroySpeed(null, null), ((BlockItem)itemStack2.getItem()).getBlock().getStateForPlacement(null).getDestroySpeed(null, null)));
+			Collections.sort(items, ENGTabs.NAME_COMPARATOR);
+			//Collections.sort(items, (itemStack1, itemStack2)->Float.compare(((BlockItem)itemStack1.getItem()).getBlock().getStateForPlacement(null).getDestroySpeed(null, null), ((BlockItem)itemStack2.getItem()).getBlock().getStateForPlacement(null).getDestroySpeed(null, null)));
 		}
-		*/
 	};
 	
-	public static final ItemGroup MISC=new ItemGroup("engmod_misc_tab")
+	public static final ItemGroup MISC=new ItemGroup("engmod.misc")
 	{
 		private int counter=-1;
 		
@@ -74,18 +102,15 @@ public abstract class ENGTabs
 		@Override
 		public ItemStack getIconItem()
 		{
-			counter++;
-			if(counter>=ENGTabs.DELAY*5) counter=0;
-			if(counter>=0&&counter<ENGTabs.DELAY) return new ItemStack(ENGItems.BARLEY.get());
-			else if(counter>=ENGTabs.DELAY&&counter<ENGTabs.DELAY*2) return new ItemStack(ENGItems.BARLEY_SEEDS.get());
-			else if(counter>=ENGTabs.DELAY*2&&counter<ENGTabs.DELAY*3) return new ItemStack(ENGItems.HOP.get());
-			else if(counter>=ENGTabs.DELAY*3&&counter<ENGTabs.DELAY*4) return new ItemStack(ENGItems.MALT.get());
-			else if(counter>=ENGTabs.DELAY*4&&counter<ENGTabs.DELAY*5) return new ItemStack(EggHandler.VALKYRIE_SPAWN_EGG);
-			return this.makeIcon();
+			this.counter++;
+			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(r->r.get()).collect(Collectors.toList());
+			tabItems.add(EggHandler.VALKYRIE_SPAWN_EGG);
+			if(this.counter>=tabItems.size()*ENGTabs.DELAY) this.counter=0;
+			return ENGTabs.currentIcon(this, tabItems, this.counter);
 		}
 	};
 	
-	public static final ItemGroup FOOD=new ItemGroup("engmod_food_tab")
+	public static final ItemGroup FOOD=new ItemGroup("engmod.food")
 	{
 		private int counter=-1;
 		
@@ -98,18 +123,30 @@ public abstract class ENGTabs
 		@Override
 		public ItemStack getIconItem()
 		{
-			counter++;
-			if(counter>=ENGTabs.DELAY*2) counter=0;
-			if(counter>=0&&counter<ENGTabs.DELAY) return new ItemStack(ENGItems.BARLEY_BREAD.get());
-			else if(counter>=ENGTabs.DELAY&&counter<ENGTabs.DELAY*2) return new ItemStack(ENGItems.BEER.get());
-			return this.makeIcon();
+			this.counter++;
+			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(r->r.get()).collect(Collectors.toList());
+			if(this.counter>=tabItems.size()*ENGTabs.DELAY) this.counter=0;
+			return ENGTabs.currentIcon(this, tabItems, this.counter);
 		}
 
 		@Override
 		public void fillItemList(NonNullList<ItemStack> items)
 		{
 			super.fillItemList(items);
-			Collections.sort(items, (itemStack1, itemStack2)->Integer.compare(itemStack2.getItem().getFoodProperties().getNutrition(), itemStack1.getItem().getFoodProperties().getNutrition()));
+			Collections.sort(items, ENGTabs.FOOD_COMPARATOR);
 		}
 	};
+	
+	private static ItemStack currentIcon(ItemGroup tab, List<Item> tabItems, int counter)
+	{
+		for(int i=0; i<tabItems.size(); i++)
+		{
+			Item item=tabItems.get(i);
+			if(item.getCreativeTabs().contains(tab))
+			{
+				if(counter>=ENGTabs.DELAY*i&&counter<ENGTabs.DELAY*(i+1)) return new ItemStack(item);
+			}
+		}
+		return tab.makeIcon();
+	}
 }

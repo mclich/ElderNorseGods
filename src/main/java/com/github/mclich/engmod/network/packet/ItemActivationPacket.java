@@ -1,11 +1,10 @@
-package com.github.mclich.engmod.network.server;
+package com.github.mclich.engmod.network.packet;
 
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -28,14 +27,12 @@ public class ItemActivationPacket
 		return new ItemActivationPacket(buffer.readItem());
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	public static void handle(ItemActivationPacket packet, Supplier<NetworkEvent.Context> ctx)
 	{
 		ctx.get().enqueueWork(()->DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()->PacketHandler.handlePacket(packet, ctx)));
 		ctx.get().setPacketHandled(true);
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	private static class PacketHandler
 	{
 		@SuppressWarnings("resource")

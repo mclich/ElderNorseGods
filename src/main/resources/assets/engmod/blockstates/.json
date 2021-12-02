@@ -1,0 +1,9 @@
+{
+	"variants":
+	{
+		"":
+		{
+			"model": "engmod:block/frost_hyacinth"
+		}
+	}
+}

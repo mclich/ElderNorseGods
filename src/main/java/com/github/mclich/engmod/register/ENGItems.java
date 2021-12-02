@@ -5,6 +5,8 @@ import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.block.BarleyHayBlock;
 import com.github.mclich.engmod.block.BreweryBlock;
 import com.github.mclich.engmod.block.CustomBlock;
+import com.github.mclich.engmod.block.FireLilyFlowerBlock;
+import com.github.mclich.engmod.block.FrostHyacinthFlowerBlock;
 import com.github.mclich.engmod.entity.ValkyrieEntity;
 import com.github.mclich.engmod.item.*;
 import net.minecraft.block.DispenserBlock;
@@ -12,9 +14,10 @@ import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockNamedItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
 import net.minecraftforge.event.RegistryEvent.Register;
@@ -35,13 +38,18 @@ public abstract class ENGItems
 	public static final RegistryObject<Item> HOP=ENGItems.ITEMS.register(HopItem.ID, HopItem::new);
 	public static final RegistryObject<Item> MALT=ENGItems.ITEMS.register(MaltItem.ID, MaltItem::new);
 	public static final RegistryObject<Item> BEER=ENGItems.ITEMS.register(BeerItem.ID, BeerItem::new);
+	public static final RegistryObject<Item> FIRE_TINCTURE=ENGItems.ITEMS.register("fire_tincture", ()->new Item(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON).tab(ENGTabs.MISC)));
+	public static final RegistryObject<Item> FROST_TINCTURE=ENGItems.ITEMS.register("frost_tincture", ()->new Item(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON).tab(ENGTabs.MISC)));
+	public static final RegistryObject<Item> MANA_TINCTURE=ENGItems.ITEMS.register(ManaTinctureItem.ID, ManaTinctureItem::new);
 	public static final RegistryObject<Item> BARLEY_BREAD=ENGItems.ITEMS.register(BarleyBreadItem.ID, BarleyBreadItem::new);
 	public static final RegistryObject<Item> TOTEM_OF_ABYSS=ENGItems.ITEMS.register(TotemOfAbyssItem.ID, TotemOfAbyssItem::new);
 	public static final RegistryObject<Item> CUSTOM_SWORD=ENGItems.ITEMS.register(CustomSwordItem.ID, CustomSwordItem::new);
 	
-	public static final RegistryObject<Item> BREWERY_ITEM=ENGItems.ITEMS.register(BreweryBlock.ID, ()->new BlockItem(ENGBlocks.BREWERY.get(), new Item.Properties().tab(ENGTabs.BLOCKS)));
-	public static final RegistryObject<Item> BARLEY_HAY_BLOCK_ITEM=ENGItems.ITEMS.register(BarleyHayBlock.ID, ()->new BlockItem(ENGBlocks.BARLEY_HAY_BLOCK.get(), new Item.Properties().tab(ENGTabs.BLOCKS)));
-	public static final RegistryObject<Item> CUSTOM_BLOCK_ITEM=ENGItems.ITEMS.register(CustomBlock.ID, ()->new BlockItem(ENGBlocks.CUSTOM_BLOCK.get(), new Item.Properties().tab(ENGTabs.BLOCKS)));
+	public static final RegistryObject<Item> BREWERY_ITEM=ENGItems.ITEMS.register(BreweryBlock.ID, ()->new BlockNamedItem(ENGBlocks.BREWERY.get(), new Item.Properties().tab(ENGTabs.BLOCKS)));
+	public static final RegistryObject<Item> BARLEY_HAY_BLOCK_ITEM=ENGItems.ITEMS.register(BarleyHayBlock.ID, ()->new BlockNamedItem(ENGBlocks.BARLEY_HAY_BLOCK.get(), new Item.Properties().tab(ENGTabs.BLOCKS)));
+	public static final RegistryObject<Item> FIRE_LILY_FLOWER_ITEM=ENGItems.ITEMS.register(FireLilyFlowerBlock.ID, ()->new BlockNamedItem(ENGBlocks.FIRE_LILY_FLOWER.get(), new Item.Properties().rarity(Rarity.UNCOMMON).tab(ENGTabs.MISC)));
+	public static final RegistryObject<Item> FROST_HYACINTH_FLOWER_ITEM=ENGItems.ITEMS.register(FrostHyacinthFlowerBlock.ID, ()->new BlockNamedItem(ENGBlocks.FROST_HYACINTH_FLOWER.get(), new Item.Properties().rarity(Rarity.UNCOMMON).tab(ENGTabs.MISC)));
+	public static final RegistryObject<Item> CUSTOM_BLOCK_ITEM=ENGItems.ITEMS.register(CustomBlock.ID, ()->new BlockNamedItem(ENGBlocks.CUSTOM_BLOCK.get(), new Item.Properties().tab(ENGTabs.BLOCKS)));
 	
 	@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=EventBusSubscriber.Bus.MOD)
 	public static abstract class EggHandler

@@ -1,0 +1,45 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "ABC",
+        "DEF",
+        "D#F"
+    ],
+    "key":
+    {
+		"#":
+        {
+            "item": "minecraft:bowl"
+        },
+		"A":
+        {
+            "item": "minecraft:brown_mushroom"
+        },
+		"B":
+        {
+            "item": "minecraft:sugar"
+        },
+		"C":
+        {
+            "item": "minecraft:spider_eye"
+        },
+        "E":
+        {
+            "item": "minecraft:blaze_powder"
+        },
+        "D":
+        {
+            "item": "engmod:frost_tincture"
+        },
+        "F":
+        {
+            "item": "engmod:fire_tincture"
+        }
+    },
+    "result":
+    {
+        "item": "engmod:mana_tincture",
+        "count": 1
+    }
+}

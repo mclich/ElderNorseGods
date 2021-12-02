@@ -137,12 +137,8 @@ public class BreweryBlock extends HorizontalBlock
 			if(tileEntity instanceof BreweryTileEntity)
 			{
 				NetworkHooks.openGui((ServerPlayerEntity)player, (BreweryTileEntity)tileEntity, tileEntity.getBlockPos());
-				//player.openMenu((BreweryTileEntity)tileEntity);
-				//player.awardStat(Stats.INTERACT_WITH_FURNACE);
 			}
 			return ActionResultType.CONSUME;
 		}
 	}
-	
-	
 }

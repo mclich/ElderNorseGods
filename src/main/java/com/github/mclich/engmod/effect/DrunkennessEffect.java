@@ -54,9 +54,9 @@ public class DrunkennessEffect extends Effect
 	{
 		PlayerEntity player=event.getPlayer();
 		ThreadLocalRandom random=ThreadLocalRandom.current();
-		if(player.hasEffect(ENGEffects.DRUNKENNESS.get())&&random.nextInt(0, 6)<1)
+		if(player.getCommandSenderWorld().isClientSide()&&player.hasEffect(ENGEffects.DRUNKENNESS.get())&&random.nextInt(0, 6)<1)
 	    {
-			int impulse=150;
+			int impulse=250;
 			MovementInput moves=event.getMovementInput();
 			if(moves.up||moves.down) moves.leftImpulse+=random.nextInt(-impulse, impulse+1);
 			if(moves.left||moves.right) moves.forwardImpulse+=random.nextInt(-impulse, impulse+1);

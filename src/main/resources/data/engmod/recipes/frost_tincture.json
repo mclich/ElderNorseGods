@@ -1,0 +1,16 @@
+{
+	"type": "engmod:brewing",
+	"bottle":
+	{
+		"type": "forge:nbt",
+		"item": "minecraft:potion",
+		"nbt": "{Potion:'minecraft:water'}"
+	},
+	"ingredient":
+	{
+		"item": "engmod:frost_hyacinth"
+	},
+	"result": "engmod:frost_tincture",
+	"experience": 0.7,
+	"brew_time": 700
+}

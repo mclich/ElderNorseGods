@@ -1,0 +1,14 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients":
+    [
+        {
+            "item": "engmod:fire_lily"
+        }
+    ],
+    "result":
+    {
+        "item": "minecraft:orange_dye",
+        "count": 1
+    }
+}
