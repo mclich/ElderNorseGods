@@ -30,16 +30,16 @@
         },
         "D":
         {
-            "item": "engmod:frost_tincture"
+            "item": "engmod:frost_extract"
         },
         "F":
         {
-            "item": "engmod:fire_tincture"
+            "item": "engmod:fire_extract"
         }
     },
     "result":
     {
-        "item": "engmod:mana_tincture",
+        "item": "engmod:mana_mixture",
         "count": 1
     }
 }

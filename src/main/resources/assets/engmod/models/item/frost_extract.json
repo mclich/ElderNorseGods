@@ -2,6 +2,6 @@
 	"parent": "minecraft:item/generated",
 	"textures": 
 	{
-		"layer0": "engmod:item/fire_tincture"
+		"layer0": "engmod:item/frost_extract"
 	}
 }

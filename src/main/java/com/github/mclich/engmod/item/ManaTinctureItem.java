@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class ManaTinctureItem extends Item
 {
-	public static final String ID="mana_tincture";
+	public static final String ID="mana_mixture";
 	
 	public ManaTinctureItem()
 	{

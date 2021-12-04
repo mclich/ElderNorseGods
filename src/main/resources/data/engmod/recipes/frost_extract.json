@@ -10,7 +10,7 @@
 	{
 		"item": "engmod:frost_hyacinth"
 	},
-	"result": "engmod:frost_tincture",
+	"result": "engmod:frost_extract",
 	"experience": 0.7,
 	"brew_time": 700
 }

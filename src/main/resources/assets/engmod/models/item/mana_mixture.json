@@ -2,6 +2,6 @@
 	"parent": "minecraft:item/generated",
 	"textures": 
 	{
-		"layer0": "engmod:item/frost_tincture"
+		"layer0": "engmod:item/mana_mixture"
 	}
 }
