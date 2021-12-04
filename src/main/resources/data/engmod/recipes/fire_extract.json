@@ -10,7 +10,7 @@
 	{
 		"item": "engmod:fire_lily"
 	},
-	"result": "engmod:fire_tincture",
+	"result": "engmod:fire_extract",
 	"experience": 0.7,
 	"brew_time": 700
 }
