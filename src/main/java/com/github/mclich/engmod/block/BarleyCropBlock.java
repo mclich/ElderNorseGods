@@ -1,7 +1,6 @@
 package com.github.mclich.engmod.block;
 
 import com.github.mclich.engmod.register.ENGItems;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropsBlock;
@@ -21,7 +20,7 @@ import net.minecraft.world.World;
 public class BarleyCropBlock extends CropsBlock
 {
 	private static final IntegerProperty AGE=BlockStateProperties.AGE_3;
-	private static final VoxelShape[] SHAPES=new VoxelShape[]{Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D)};
+	private static final VoxelShape[] SHAPES=new VoxelShape[]{Block.box(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 5.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D)};
 	
 	public static final String ID="barley_crop";
 	
@@ -51,7 +50,7 @@ public class BarleyCropBlock extends CropsBlock
 	@Override
 	protected int getBonemealAgeIncrease(World world)
 	{
-		return MathHelper.nextInt(world.random, 1, 3);
+		return MathHelper.nextInt(world.getRandom(), 1, 2);
 	}
 	
 	@Override

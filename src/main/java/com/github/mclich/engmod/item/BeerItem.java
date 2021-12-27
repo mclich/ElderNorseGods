@@ -3,7 +3,7 @@ package com.github.mclich.engmod.item;
 import com.github.mclich.engmod.effect.DrunkennessEffect;
 import com.github.mclich.engmod.register.ENGTabs;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,10 +25,10 @@ public class BeerItem extends Item
 	public ItemStack finishUsingItem(ItemStack itemStack, World world, LivingEntity entity)
 	{
 		itemStack=entity.eat(world, itemStack);
-		if(!world.isClientSide()&&entity instanceof ServerPlayerEntity)
+		if(entity instanceof PlayerEntity)
 		{
-			ServerPlayerEntity player=(ServerPlayerEntity)entity;
-			if(player.gameMode.isSurvival())
+			PlayerEntity player=(PlayerEntity)entity;
+			if(!player.abilities.instabuild)
 			{
 				if(itemStack.getCount()==0&&!player.inventory.contains(new ItemStack(Items.GLASS_BOTTLE)))
 				{

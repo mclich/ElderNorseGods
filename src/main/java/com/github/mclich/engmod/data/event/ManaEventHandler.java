@@ -16,28 +16,25 @@ public abstract class ManaEventHandler
 {
 	private static void sendUpdates(ServerPlayerEntity player)
 	{
-		if(!player.getCommandSenderWorld().isClientSide())
-		{
-			player.getCapability(ManaCapability.CAP_INSTANCE).ifPresent(mana->mana.update(player));
-		}
+		player.getCapability(ManaCapability.CAP_INSTANCE).ifPresent(mana->mana.update(player));
 	}
 	
 	@SubscribeEvent
 	public static void onPlayerChangedDimension(PlayerChangedDimensionEvent event)
 	{
-		ManaEventHandler.sendUpdates((ServerPlayerEntity)event.getPlayer());
+		if(!event.getPlayer().getCommandSenderWorld().isClientSide()) ManaEventHandler.sendUpdates((ServerPlayerEntity)event.getPlayer());
 	}
 	
 	@SubscribeEvent
 	public static void onPlayerRespawn(PlayerRespawnEvent event)
 	{
-		ManaEventHandler.sendUpdates((ServerPlayerEntity)event.getPlayer());
+		if(!event.getPlayer().getCommandSenderWorld().isClientSide()) ManaEventHandler.sendUpdates((ServerPlayerEntity)event.getPlayer());
 	}
 	
 	@SubscribeEvent
 	public static void onPlayerLoggedIn(PlayerLoggedInEvent event)
 	{
-		ManaEventHandler.sendUpdates((ServerPlayerEntity)event.getPlayer());
+		if(!event.getPlayer().getCommandSenderWorld().isClientSide()) ManaEventHandler.sendUpdates((ServerPlayerEntity)event.getPlayer());
 	}
 	
 	@SubscribeEvent

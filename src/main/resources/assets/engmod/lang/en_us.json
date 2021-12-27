@@ -15,6 +15,8 @@
 	"item.engmod.barley_hay_block": "Barley Hay Block",
 	"item.engmod.totem_of_abyss": "Totem of Abyss",
 	"item.engmod.custom_sword": "Custom Sword",
+	"item.engmod.healing_staff": "Healing Staff",
+	"item.engmod.regeneration_staff": "Regeneration Staff",
 	"item.engmod.custom_block": "Custom Block",
 	"item.engmod.valkyrie_spawn_egg": "Valkyrie Spawn Egg",
 	"item.minecraft.bread": "Wheat Bread",
@@ -24,6 +26,12 @@
 	"item.minecraft.tipped_arrow.effect.replenishment": "Arrow of Replenishment",
 	"block.minecraft.hay_block": "Wheat Hay Block",
 	"container.engmod.brewery": "Brewery",
+	"staff.engmod.used": "When Used:",
+	"staff.engmod.cooldown": "Cooldown: %s second(s)",
+	"staff.engmod.perm_mana": " -%s MP per Second",
+	"staff.engmod.perm_effect_heal": " +%s HP per Second",
+	"staff.engmod.rev_mana": " -%s MP per Usage",
+	"staff.engmod.rev_effect_regen": " +%s HP per Usage",
 	"effect.engmod.drunkenness": "Drunkenness",
 	"effect.engmod.replenishment": "Replenishment",
 	"entity.engmod.valkyrie_entity": "Valkyrie",
@@ -33,5 +41,7 @@
 	"itemGroup.engmod.materials": "ENG: Materials",
 	"itemGroup.engmod.blocks": "ENG: Blocks",
 	"itemGroup.engmod.misc": "ENG: Miscellaneous",
-	"itemGroup.engmod.food": "ENG: Foodstuffs"
+	"itemGroup.engmod.food": "ENG: Foodstuffs",
+	"message.engmod.no_mana_points": "Not enough mana",
+	"message.engmod.no_mana_access": "You can not use this item yet"
 }

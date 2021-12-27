@@ -7,6 +7,7 @@ import com.github.mclich.engmod.block.FireLilyFlowerBlock;
 import com.github.mclich.engmod.block.FrostHyacinthFlowerBlock;
 import com.github.mclich.engmod.entity.ValkyrieEntity;
 import com.github.mclich.engmod.item.*;
+import com.github.mclich.engmod.item.staff.*;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
@@ -39,10 +40,12 @@ public abstract class ENGItems
 	public static final RegistryObject<Item> BEER=ENGItems.ITEMS.register(BeerItem.ID, BeerItem::new);
 	public static final RegistryObject<Item> FIRE_TINCTURE=ENGItems.ITEMS.register("fire_extract", ()->new Item(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON).tab(ENGTabs.MISC)));
 	public static final RegistryObject<Item> FROST_TINCTURE=ENGItems.ITEMS.register("frost_extract", ()->new Item(new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON).tab(ENGTabs.MISC)));
-	public static final RegistryObject<Item> MANA_TINCTURE=ENGItems.ITEMS.register(ManaTinctureItem.ID, ManaTinctureItem::new);
+	public static final RegistryObject<Item> MANA_TINCTURE=ENGItems.ITEMS.register(ManaMixtureItem.ID, ManaMixtureItem::new);
 	public static final RegistryObject<Item> BARLEY_BREAD=ENGItems.ITEMS.register("barley_bread", ()->new Item(new Item.Properties().food(new Food.Builder().nutrition(5).saturationMod(0.6F).build()).tab(ENGTabs.FOOD)));
 	public static final RegistryObject<Item> TOTEM_OF_ABYSS=ENGItems.ITEMS.register(TotemOfAbyssItem.ID, TotemOfAbyssItem::new);
 	public static final RegistryObject<Item> CUSTOM_SWORD=ENGItems.ITEMS.register(CustomSwordItem.ID, CustomSwordItem::new);
+	public static final RegistryObject<Item> HEALING_STAFF=ENGItems.ITEMS.register(HealingStaffItem.ID, HealingStaffItem::new);
+	public static final RegistryObject<Item> REGENERATION_STAFF=ENGItems.ITEMS.register(RegenerationStaffItem.ID, RegenerationStaffItem::new);
 	
 	public static final RegistryObject<Item> BREWERY_ITEM=ENGItems.ITEMS.register(BreweryBlock.ID, ()->new BlockNamedItem(ENGBlocks.BREWERY.get(), new Item.Properties().tab(ENGTabs.BLOCKS)));
 	public static final RegistryObject<Item> BARLEY_HAY_BLOCK_ITEM=ENGItems.ITEMS.register("barley_hay_block", ()->new BlockNamedItem(ENGBlocks.BARLEY_HAY_BLOCK.get(), new Item.Properties().tab(ENGTabs.BLOCKS)));

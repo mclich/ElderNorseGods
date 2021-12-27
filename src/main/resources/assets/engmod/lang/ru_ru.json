@@ -15,6 +15,8 @@
 	"item.engmod.barley_hay_block": "Сноп ячменя",
 	"item.engmod.totem_of_abyss": "Тотем бездны",
 	"item.engmod.custom_sword": "Кастомный меч",
+	"item.engmod.healing_staff": "Посох исцеления",
+	"item.engmod.regeneration_staff": "Посох регенерации",
 	"item.engmod.custom_block": "Кастомный блок",
 	"item.engmod.valkyrie_spawn_egg": "Яйцо призыва валькирии",
 	"item.minecraft.bread": "Пшеничный хлеб",
@@ -24,6 +26,12 @@
 	"item.minecraft.tipped_arrow.effect.replenishment": "Стрела восполнения",
 	"block.minecraft.hay_block": "Сноп пшеницы",
 	"container.engmod.brewery": "Пивоварня",
+	"staff.engmod.used": "При использовании:",
+	"staff.engmod.cooldown": "Восстановление: %s секунд(ы)",
+	"staff.engmod.perm_mana": " -%s ОМ в секунду",
+	"staff.engmod.perm_effect_heal": " +%s ОЗ в секунду",
+	"staff.engmod.rev_mana": " -%s ОМ за использование",
+	"staff.engmod.rev_effect_regen": " +%s ОЗ за использование",
 	"effect.engmod.drunkenness": "Опьянение",
 	"effect.engmod.replenishment": "Восполнение",
 	"entity.engmod.valkyrie_entity": "Валькирия",
@@ -33,5 +41,7 @@
 	"itemGroup.engmod.materials": "ENG: Материалы",
 	"itemGroup.engmod.blocks": "ENG: Блоки",
 	"itemGroup.engmod.misc": "ENG: Разное",
-	"itemGroup.engmod.food": "ENG: Пища"
+	"itemGroup.engmod.food": "ENG: Пища",
+	"message.engmod.no_mana_points": "Недостаточно маны",
+	"message.engmod.no_mana_access": "Вы пока не можете использовать этот предмет"
 }
