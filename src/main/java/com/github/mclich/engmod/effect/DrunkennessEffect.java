@@ -1,6 +1,6 @@
 package com.github.mclich.engmod.effect;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.register.ENGEffects;
 import net.minecraft.entity.LivingEntity;
@@ -12,6 +12,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.MovementInput;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -53,13 +54,13 @@ public class DrunkennessEffect extends Effect
 	public static void randomWalking(InputUpdateEvent event)
 	{
 		PlayerEntity player=event.getPlayer();
-		ThreadLocalRandom random=ThreadLocalRandom.current();
-		if(player.getCommandSenderWorld().isClientSide()&&player.hasEffect(ENGEffects.DRUNKENNESS.get())&&random.nextInt(0, 6)<1)
+		Random random=player.getCommandSenderWorld().getRandom();
+		if(player.getCommandSenderWorld().isClientSide()&&player.hasEffect(ENGEffects.DRUNKENNESS.get())&&MathHelper.nextInt(random, 0, 6)<1)
 	    {
 			int impulse=250;
 			MovementInput moves=event.getMovementInput();
-			if(moves.up||moves.down) moves.leftImpulse+=random.nextInt(-impulse, impulse+1);
-			if(moves.left||moves.right) moves.forwardImpulse+=random.nextInt(-impulse, impulse+1);
+			if(moves.up||moves.down) moves.leftImpulse+=MathHelper.nextInt(random, -impulse, impulse+1);
+			if(moves.left||moves.right) moves.forwardImpulse+=MathHelper.nextInt(random, -impulse, impulse+1);
 	    }
 	}
 }

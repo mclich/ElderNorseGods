@@ -1,7 +1,6 @@
 package com.github.mclich.engmod.network;
 
 import com.github.mclich.engmod.ElderNorseGods;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;

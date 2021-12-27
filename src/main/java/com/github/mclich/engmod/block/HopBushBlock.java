@@ -1,7 +1,6 @@
 package com.github.mclich.engmod.block;
 
 import com.github.mclich.engmod.register.ENGItems;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
