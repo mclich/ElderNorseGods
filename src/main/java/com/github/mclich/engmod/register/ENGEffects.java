@@ -11,6 +11,7 @@ public abstract class ENGEffects
 {
 	public static final DeferredRegister<Effect> EFFECTS=DeferredRegister.create(ForgeRegistries.POTIONS, ElderNorseGods.MOD_ID);
 	
+	public static final RegistryObject<Effect> ANEMIA=ENGEffects.EFFECTS.register(AnemiaEffect.ID, AnemiaEffect::new);
 	public static final RegistryObject<Effect> DRUNKENNESS=ENGEffects.EFFECTS.register(DrunkennessEffect.ID, DrunkennessEffect::new);
 	public static final RegistryObject<Effect> REPLENISHMENT=ENGEffects.EFFECTS.register(ReplenishmentEffect.ID, ReplenishmentEffect::new);
 }

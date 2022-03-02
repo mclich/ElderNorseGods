@@ -17,23 +17,21 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class ReversibleStaffItem extends StaffItem
 {
-	private static final int USE_DELAY=5;
-	
 	private float consumedMana;
 	
+	protected final int manaUseDelay;
 	protected final float manaToConsume;
 	protected final float effectToApply;
-	protected float cooldown;
+	protected final float cooldown;
 	
-	public ReversibleStaffItem(Rarity rarity, int durability, float manaToConsume, float effectToApply, float cooldown)
+	public ReversibleStaffItem(Rarity rarity, int particleColor, int durability, int manaUseDelay, float manaToConsume, float effectToApply, float cooldown)
 	{
-		super(rarity, durability);
+		super(rarity, particleColor, durability);
 		this.consumedMana=0F;
+		this.manaUseDelay=manaUseDelay;
 		this.manaToConsume=manaToConsume;
 		this.effectToApply=effectToApply;
 		this.cooldown=cooldown;
@@ -42,11 +40,10 @@ public abstract class ReversibleStaffItem extends StaffItem
 	@Override
 	public int getUseDuration(ItemStack itemStack)
 	{
-		return ((int)this.manaToConsume+1)*ReversibleStaffItem.USE_DELAY;
+		return ((int)this.manaToConsume+1)*this.manaUseDelay;
 	}
 	
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> textField, ITooltipFlag advanced)
 	{
 		if(itemStack.isEnchanted())
@@ -66,6 +63,7 @@ public abstract class ReversibleStaffItem extends StaffItem
 	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand)
 	{
 		ItemStack handItem=player.getItemInHand(hand);
+		if(StaffItem.hasPlayerShieldEquipped(player, hand)) return ActionResult.fail(handItem);
 		IManaHandler mana=player.getCapability(ManaCapability.CAP_INSTANCE).orElse(null);
 		if(player.abilities.instabuild)
 		{
@@ -95,6 +93,7 @@ public abstract class ReversibleStaffItem extends StaffItem
 	@Override
 	public void onUseTick(World world, LivingEntity entity, ItemStack itemStack, int ticks)
 	{
+		super.onUseTick(world, entity, itemStack, ticks);
 		if(!world.isClientSide()&&entity instanceof ServerPlayerEntity)
 		{
 			ServerPlayerEntity player=(ServerPlayerEntity)entity;
@@ -103,7 +102,7 @@ public abstract class ReversibleStaffItem extends StaffItem
 			if(mana!=null&&mana.getMana()>0F&&!player.abilities.instabuild)
 			{
 				if(power==0) power=1;
-				if(power%ReversibleStaffItem.USE_DELAY==0&&this.consumedMana<this.manaToConsume)
+				if(power%this.manaUseDelay==0&&this.consumedMana<this.manaToConsume)
 				{
 					this.consumedMana++;
 					mana.setAndUpdateMana(player, mana.getMana()>1F?mana.getMana()-1F:0F);
@@ -119,8 +118,8 @@ public abstract class ReversibleStaffItem extends StaffItem
 		{
 			PlayerEntity player=(PlayerEntity)entity;
 			player.getCooldowns().addCooldown(this, Math.round(20*this.cooldown));
-			itemStack.hurtAndBreak(1, player, e->e.broadcastBreakEvent(player.getUsedItemHand()));
 		}
+		itemStack.hurtAndBreak(1, entity, e->e.broadcastBreakEvent(entity.getUsedItemHand()));
 		this.applyEffect(world, entity, itemStack);
 		this.consumedMana=0F;
 		return itemStack;

@@ -13,20 +13,20 @@ public class SpawnParticlesPacket
 {
 	private IParticleData particle;
 	private UUID player;
-	private int lifeTime;
+	private int lifetime;
 	
-	public SpawnParticlesPacket(IParticleData particle, UUID player, int lifeTime)
+	public SpawnParticlesPacket(IParticleData particle, UUID player, int lifetime)
 	{
 		this.particle=particle;
 		this.player=player;
-		this.lifeTime=lifeTime;
+		this.lifetime=lifetime;
 	}
 	
 	public static void encode(SpawnParticlesPacket packet, PacketBuffer buffer)
 	{
 		buffer.writeRegistryId(packet.particle.getType());
 		buffer.writeUUID(packet.player);
-		buffer.writeInt(packet.lifeTime);
+		buffer.writeInt(packet.lifetime);
 	}
 	
 	public static SpawnParticlesPacket decode(PacketBuffer buffer)
@@ -45,7 +45,7 @@ public class SpawnParticlesPacket
 		private static void handlePacket(SpawnParticlesPacket packet, Supplier<NetworkEvent.Context> ctx)
 		{
 			Minecraft mc=Minecraft.getInstance();
-			mc.particleEngine.createTrackingEmitter(mc.level.getPlayerByUUID(packet.player), packet.particle, packet.lifeTime);
+			mc.particleEngine.createTrackingEmitter(mc.level.getPlayerByUUID(packet.player), packet.particle, packet.lifetime);
 		}
 	}
 }

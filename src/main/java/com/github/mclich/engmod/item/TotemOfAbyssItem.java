@@ -28,8 +28,8 @@ import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=EventBusSubscriber.Bus.FORGE)
 public class TotemOfAbyssItem extends Item
 {
 	public static final String ID="totem_of_abyss";
@@ -38,33 +38,14 @@ public class TotemOfAbyssItem extends Item
 	{
 		super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(ENGTabs.COMBAT));
 	}
-
-	@SubscribeEvent
-	public static void onVoidDamage(LivingDamageEvent event)
+	
+	private float getResRot(BlockPos blockSpawnPos, Vector3d playerSpawnPos)
 	{
-		if(event.getEntityLiving() instanceof PlayerEntity)
-		{
-			Item totem=ENGItems.TOTEM_OF_ABYSS.get();
-			PlayerEntity player=(PlayerEntity)event.getEntityLiving();
-			if((player.getMainHandItem().getItem()==totem||player.getOffhandItem().getItem()==totem)&&event.getSource()==DamageSource.OUT_OF_WORLD)
-			{
-				event.setAmount(0F);
-			}
-		}
+		Vector3d vector=Vector3d.atBottomCenterOf(blockSpawnPos).subtract(playerSpawnPos).normalize();
+        return (float)MathHelper.wrapDegrees(MathHelper.atan2(vector.z, vector.x)*(double)(180F/(float)Math.PI)-90D);
 	}
 	
-	@Override
-	public void inventoryTick(ItemStack itemStack, World world, Entity entity, int tick, boolean flag)
-	{
-		if(!world.isClientSide()&&entity instanceof PlayerEntity&&entity.getY()<0&&((PlayerEntity)entity).getLastDamageSource()==DamageSource.OUT_OF_WORLD)
-		{
-			ServerPlayerEntity player=(ServerPlayerEntity)entity;
-			if(player.getMainHandItem().getItem()==this) TotemOfAbyssItem.activateTotem((ServerWorld)world, player, player.getMainHandItem());
-			else if(player.getOffhandItem().getItem()==this) TotemOfAbyssItem.activateTotem((ServerWorld)world, player, player.getOffhandItem());
-		}
-	}
-	
-	private static void activateTotem(ServerWorld world, ServerPlayerEntity player, ItemStack itemStack)
+	private void activateTotem(ServerWorld world, ServerPlayerEntity player, ItemStack itemStack)
 	{
 		player.fallDistance=0F;
 		ItemStack totem=itemStack.copy();
@@ -81,7 +62,7 @@ public class TotemOfAbyssItem extends Item
 				else
 				{
 					world=spawnDimension;
-					player.teleportTo(world, playerSpawn.x, playerSpawn.y, playerSpawn.z, TotemOfAbyssItem.getResRot(player.getRespawnPosition(), playerSpawn), 0F);
+					player.teleportTo(world, playerSpawn.x, playerSpawn.y, playerSpawn.z, this.getResRot(player.getRespawnPosition(), playerSpawn), 0F);
 				}
 				if(world.getBlockState(player.getRespawnPosition()).is(Blocks.RESPAWN_ANCHOR))
 				{
@@ -106,9 +87,32 @@ public class TotemOfAbyssItem extends Item
 		//player.playSound(SoundEvents.TOTEM_USE, 1F, 1F);
 	}
 	
-	private static float getResRot(BlockPos blockSpawnPos, Vector3d playerSpawnPos)
+	@Override
+	public void inventoryTick(ItemStack itemStack, World world, Entity entity, int tick, boolean flag)
 	{
-		Vector3d vector=Vector3d.atBottomCenterOf(blockSpawnPos).subtract(playerSpawnPos).normalize();
-        return (float)MathHelper.wrapDegrees(MathHelper.atan2(vector.z, vector.x)*(double)(180F/(float)Math.PI)-90D);
+		if(!world.isClientSide()&&entity instanceof PlayerEntity&&entity.getY()<0&&((PlayerEntity)entity).getLastDamageSource()==DamageSource.OUT_OF_WORLD)
+		{
+			ServerPlayerEntity player=(ServerPlayerEntity)entity;
+			if(player.getMainHandItem().getItem()==this) this.activateTotem((ServerWorld)world, player, player.getMainHandItem());
+			else if(player.getOffhandItem().getItem()==this) this.activateTotem((ServerWorld)world, player, player.getOffhandItem());
+		}
+	}
+	
+	@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.FORGE)
+	private static abstract class EventHandler
+	{
+		@SubscribeEvent
+		public static void onVoidDamage(LivingDamageEvent event)
+		{
+			if(event.getEntityLiving() instanceof PlayerEntity)
+			{
+				Item totem=ENGItems.TOTEM_OF_ABYSS.get();
+				PlayerEntity player=(PlayerEntity)event.getEntityLiving();
+				if((player.getMainHandItem().getItem()==totem||player.getOffhandItem().getItem()==totem)&&event.getSource()==DamageSource.OUT_OF_WORLD)
+				{
+					event.setAmount(0F);
+				}
+			}
+		}
 	}
 }

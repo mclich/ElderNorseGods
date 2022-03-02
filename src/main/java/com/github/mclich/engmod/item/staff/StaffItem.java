@@ -1,30 +1,38 @@
 package com.github.mclich.engmod.item.staff;
 
 import com.github.mclich.engmod.ElderNorseGods;
+import com.github.mclich.engmod.particle.StaffParticleData;
 import com.github.mclich.engmod.register.ENGTabs;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.IVanishable;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.item.UseAction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=EventBusSubscriber.Bus.FORGE, value=Dist.CLIENT)
 public abstract class StaffItem extends Item implements IVanishable
 {
-	public StaffItem(Rarity rarity, int durability)
+	protected int particleColor;
+	
+	public StaffItem(Rarity rarity, int particleColor, int durability)
 	{
 		super(new Item.Properties().rarity(rarity).durability(durability).tab(ENGTabs.COMBAT));
+		this.particleColor=particleColor;
+	}
+	
+	protected static boolean hasPlayerShieldEquipped(PlayerEntity player, Hand useItemHand)
+	{
+		return player.getItemInHand(useItemHand==Hand.MAIN_HAND?Hand.OFF_HAND:Hand.MAIN_HAND).isShield(player);
 	}
 	
 	protected static String toRoundedString(float number)
@@ -33,7 +41,7 @@ public abstract class StaffItem extends Item implements IVanishable
 	}
 	
 	@Override
-	public abstract boolean isValidRepairItem(ItemStack itemStack, ItemStack repairStack);
+	public abstract boolean isValidRepairItem(ItemStack staffStack, ItemStack repairStack);
 	
 	public abstract void applyEffect(World world, LivingEntity entity, ItemStack itemStack);
 	
@@ -43,21 +51,26 @@ public abstract class StaffItem extends Item implements IVanishable
 		return UseAction.BOW;
 	}
 	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public static void renderArms(RenderPlayerEvent.Pre event)
+	@Override
+	public void onUseTick(World world, LivingEntity entity, ItemStack itemStack, int ticks)
 	{
-		if(event.getPlayer().getUseItem().getItem() instanceof StaffItem)
+		if(ticks%2==0) entity.playSound(SoundEvents.PARROT_IMITATE_VEX, 0.7F, world.random.nextFloat()*0.7F+0.3F);
+		if(!world.isClientSide()) ((ServerWorld)world).sendParticles(new StaffParticleData(this.particleColor), entity.getX(), entity.getY(), entity.getZ(), 1, 0D, 0D, 0D, 1D);
+		//SoundEvents.EVOKER_PREPARE_SUMMON
+	}
+	
+	@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.FORGE)
+	private static abstract class EventHandler
+	{
+		@SubscribeEvent
+		public static void renderFPV(RenderHandEvent event)
 		{
-			PlayerRenderer renderer=event.getRenderer();
-			PlayerModel<AbstractClientPlayerEntity> model=renderer.getModel();
-			model.rightArm.xRot=model.rightArm.xRot*0.5F-(float)Math.PI;
-			model.rightArm.yRot=0.0F;
-			model.leftArm.xRot=model.leftArm.xRot*0.5F-(float)Math.PI;
-			model.leftArm.yRot=0.0F;
-			model.leftArm.visible=false;
-			//renderer.render((ClientPlayerEntity)event.getPlayer(), -0.1F, event.getPartialRenderTick(), event.getMatrixStack(), event.getBuffers(), renderer.getPackedLightCoords((ClientPlayerEntity)event.getPlayer(), event.getPartialRenderTick()));
-			renderer.renderRightHand(event.getMatrixStack(), event.getBuffers(), renderer.getPackedLightCoords((ClientPlayerEntity)event.getPlayer(), event.getPartialRenderTick()), (ClientPlayerEntity)event.getPlayer());
-			renderer.renderLeftHand(event.getMatrixStack(), event.getBuffers(), renderer.getPackedLightCoords((ClientPlayerEntity)event.getPlayer(), event.getPartialRenderTick()), (ClientPlayerEntity)event.getPlayer());
+			@SuppressWarnings("resource")
+			PlayerEntity player=Minecraft.getInstance().player;
+			if(player.isUsingItem()&&player.getUseItem().getItem() instanceof StaffItem&&player.getUsedItemHand()!=event.getHand())
+			{
+				event.setCanceled(true);
+			}
 		}
 	}
 }

@@ -3,5 +3,15 @@
 	"textures": 
 	{
 		"layer0": "engmod:item/healing_staff"
-	}
+	},
+	"overrides":
+	[
+		{
+			"predicate":
+			{
+				"engmod:casting": 1
+			},
+			"model": "engmod:item/healing_casting_staff"
+		}
+	]
 }

@@ -13,16 +13,16 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=EventBusSubscriber.Bus.FORGE, value=Dist.CLIENT)
+@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.FORGE)
 public abstract class ManaBar
 {
-	private static final ResourceLocation ICONS=new ResourceLocation(ElderNorseGods.MOD_ID+":textures/gui/bar/mana.png");
+	private static final ResourceLocation ICONS=new ResourceLocation(ElderNorseGods.MOD_ID, "textures/gui/bar/mana.png");
 	private static final int START_POS=39;
 	
 	@SubscribeEvent
@@ -31,6 +31,7 @@ public abstract class ManaBar
 		Minecraft mc=Minecraft.getInstance();
 		IManaHandler handler=mc.player.getCapability(ManaCapability.CAP_INSTANCE).orElse(null);
 		if(!mc.gameMode.getPlayerMode().isSurvival()||event.getType()!=ElementType.ALL||handler==null||!handler.getStatus()) return;
+		mc.getProfiler().push("mana");
 		RenderSystem.enableBlend();
 		int x=mc.getWindow().getGuiScaledWidth()/2+10;
 		int y=mc.getWindow().getGuiScaledHeight()-ManaBar.START_POS;
@@ -47,6 +48,7 @@ public abstract class ManaBar
         }
         if(mana%2!=0) IngameGui.blit(event.getMatrixStack(), x+77-mana*4, y+1, 37F, 1F, 7, 7, 64, 16);
         RenderSystem.disableBlend();
+        mc.getProfiler().pop();
 	}
 	
 	@SubscribeEvent
@@ -110,18 +112,4 @@ public abstract class ManaBar
         RenderSystem.disableBlend();
         mc.getProfiler().pop();
 	}
-	
-	/*
-	@SubscribeEvent
-	public static void renderFood1(RenderGameOverlayEvent.Pre event)
-	{
-		Minecraft mc=Minecraft.getInstance();
-		if(event.getType()!=ElementType.FOOD) return;
-		event.setCanceled(true);
-		//ForgeIngameGui gui=new ForgeIngameGui(mc);
-		//gui.renderFood(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight(), event.getMatrixStack());
-		//((ForgeIngameGui)mc.gui).renderFood(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight(), event.getMatrixStack());
-		//if(event.getType()==ElementType.FOOD) event.getMatrixStack().translate(0D, -10D, 0D);
-	}
-	*/
 }

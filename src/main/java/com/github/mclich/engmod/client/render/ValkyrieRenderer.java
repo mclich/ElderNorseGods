@@ -9,6 +9,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ValkyrieRenderer extends MobRenderer<ValkyrieEntity, ValkyrieModel>
 {
+	private static final ResourceLocation TEXTURE=new ResourceLocation(ElderNorseGods.MOD_ID, "textures/entity/"+ValkyrieEntity.ID+".png");
+	
 	public ValkyrieRenderer(EntityRendererManager renderManager)
 	{
 		super(renderManager, new ValkyrieModel(), 0.5F);
@@ -17,6 +19,6 @@ public class ValkyrieRenderer extends MobRenderer<ValkyrieEntity, ValkyrieModel>
 	@Override
 	public ResourceLocation getTextureLocation(ValkyrieEntity entity)
 	{
-		return new ResourceLocation(ElderNorseGods.MOD_ID, "textures/entity/"+ValkyrieEntity.ID+".png");
+		return ValkyrieRenderer.TEXTURE;
 	}
 }

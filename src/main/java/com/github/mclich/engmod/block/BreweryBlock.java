@@ -29,8 +29,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -81,7 +79,6 @@ public class BreweryBlock extends HorizontalBlock
 	}
 	
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState blockState, World world, BlockPos blockPos, Random random)
 	{
 		if(blockState.getValue(BreweryBlock.HAS_FUEL))

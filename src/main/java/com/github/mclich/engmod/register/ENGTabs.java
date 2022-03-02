@@ -10,7 +10,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
-import com.github.mclich.engmod.register.ENGItems.EggHandler;
+import com.github.mclich.engmod.register.ENGItems.EggHelper;
 
 public abstract class ENGTabs
 {
@@ -104,7 +104,7 @@ public abstract class ENGTabs
 		{
 			this.counter++;
 			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(r->r.get()).collect(Collectors.toList());
-			tabItems.add(EggHandler.VALKYRIE_SPAWN_EGG);
+			tabItems.add(EggHelper.VALKYRIE_SPAWN_EGG);
 			if(this.counter>=tabItems.size()*ENGTabs.DELAY) this.counter=0;
 			return ENGTabs.currentIcon(this, tabItems, this.counter);
 		}
