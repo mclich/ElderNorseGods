@@ -14,7 +14,7 @@ public class ReplenishmentEffect extends Effect
 
 	public ReplenishmentEffect()
 	{
-		super(EffectType.BENEFICIAL, 0x007dfb);
+		super(EffectType.BENEFICIAL, 0x007DFB);
 	}
 	
 	public static EffectInstance getInstance()

@@ -17,6 +17,7 @@ public class ElderNorseGods
 	public ElderNorseGods()
 	{
 		IEventBus eventBus=FMLJavaModLoadingContext.get().getModEventBus();
+		ENGParticles.PARTICLES.register(eventBus);
 		ENGEffects.EFFECTS.register(eventBus);
 		ENGPotions.POTIONS.register(eventBus);
 		ENGEnchantments.ENCHANTMENTS.register(eventBus);
@@ -27,19 +28,4 @@ public class ElderNorseGods
 		ENGSerializers.SERIALIZERS.register(eventBus);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-	
-	/*
-	@SubscribeEvent
-	public static void test(ItemTooltipEvent event)
-	{
-		if(event.getItemStack().getItem()==Items.HAY_BLOCK&&event.getFlags().isAdvanced())
-		{
-			StringTextComponent text=new StringTextComponent("minecraft:wheat_hay_block");
-			text.setStyle(text.getStyle().withColor(TextFormatting.DARK_GRAY));
-			List<ITextComponent> tips=event.getToolTip();
-			tips.remove(tips.size()-1);
-			tips.add(text);
-		}
-	} 
-	*/
 }

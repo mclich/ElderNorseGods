@@ -3,5 +3,15 @@
 	"textures": 
 	{
 		"layer0": "engmod:item/regeneration_staff"
-	}
+	},
+	"overrides":
+	[
+		{
+			"predicate":
+			{
+				"engmod:casting": 1
+			},
+			"model": "engmod:item/regeneration_casting_staff"
+		}
+	]
 }

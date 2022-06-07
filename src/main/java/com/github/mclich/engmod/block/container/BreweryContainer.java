@@ -48,16 +48,16 @@ public class BreweryContainer extends Container
         		}
         	);
         }
-        for(int i=0; i<3; ++i)
+        for(int i=0; i<3; i++)
         {
-        	for(int j=0; j<9; ++j)
+        	for(int j=0; j<9; j++)
         	{
         		this.addSlot(new Slot(pInventory, j+i*9+9, 8+j*18, 93+i*18));
         	}
         }
-        for(int k=0; k<9; ++k)
+        for(int i=0; i<9; i++)
         {
-        	this.addSlot(new Slot(pInventory, k, 8+k*18, 151));
+        	this.addSlot(new Slot(pInventory, i, 8+i*18, 151));
         }
 	}
 

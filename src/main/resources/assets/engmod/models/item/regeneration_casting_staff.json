@@ -1,0 +1,7 @@
+{
+	"parent": "engmod:item/casting_staff",
+	"textures": 
+	{
+		"layer0": "engmod:item/regeneration_staff"
+	}
+}

@@ -16,19 +16,17 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class PermanentStaffItem extends StaffItem
 {
-	protected final int manaPerTicks;
-	protected final int effectPerTicks;
+	protected final int manaUseDelay;
+	protected final int effectUseDelay;
 	
-	public PermanentStaffItem(Rarity rarity, int durability, int manaPerTicks, int effectPerTicks)
+	public PermanentStaffItem(Rarity rarity, int particleColor, int durability, int manaUseDelay, int effectUseDelay)
 	{
-		super(rarity, durability);
-		this.manaPerTicks=manaPerTicks;
-		this.effectPerTicks=effectPerTicks;
+		super(rarity, particleColor, durability);
+		this.manaUseDelay=manaUseDelay;
+		this.effectUseDelay=effectUseDelay;
 	}
 	
 	@Override
@@ -38,7 +36,6 @@ public abstract class PermanentStaffItem extends StaffItem
 	}
 	
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> textField, ITooltipFlag advanced)
 	{
 		if(itemStack.isEnchanted())
@@ -48,14 +45,15 @@ public abstract class PermanentStaffItem extends StaffItem
 		}
 		textField.add(StringTextComponent.EMPTY);
 		textField.add(new TranslationTextComponent("staff.engmod.used").withStyle(TextFormatting.GRAY));
-		textField.add(new TranslationTextComponent("staff.engmod.perm_mana", StaffItem.toRoundedString(20F/this.manaPerTicks)).withStyle(TextFormatting.DARK_GREEN));
-		textField.add(new TranslationTextComponent("staff.engmod.perm_effect_heal", StaffItem.toRoundedString(20F/this.effectPerTicks)).withStyle(TextFormatting.DARK_GREEN));
+		textField.add(new TranslationTextComponent("staff.engmod.perm_mana", StaffItem.toRoundedString(20F/this.manaUseDelay)).withStyle(TextFormatting.DARK_GREEN));
+		textField.add(new TranslationTextComponent("staff.engmod.perm_effect_heal", StaffItem.toRoundedString(20F/this.effectUseDelay)).withStyle(TextFormatting.DARK_GREEN));
 	}
 
 	@Override
 	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand)
 	{
 		ItemStack handItem=player.getItemInHand(hand);
+		if(StaffItem.hasPlayerShieldEquipped(player, hand)) return ActionResult.fail(handItem);
 		IManaHandler mana=player.getCapability(ManaCapability.CAP_INSTANCE).orElse(null);
 		if(player.abilities.instabuild)
 		{
@@ -85,6 +83,7 @@ public abstract class PermanentStaffItem extends StaffItem
 	@Override
 	public void onUseTick(World world, LivingEntity entity, ItemStack itemStack, int ticks)
 	{
+		super.onUseTick(world, entity, itemStack, ticks);
 		if(entity instanceof PlayerEntity)
 		{
 			PlayerEntity player=(PlayerEntity)entity;
@@ -93,9 +92,9 @@ public abstract class PermanentStaffItem extends StaffItem
 			if(mana!=null&&mana.getMana()>0F&&!player.abilities.instabuild)
 			{
 				if(power==0) power=1;
-				if(power%this.manaPerTicks==0) mana.setMana(mana.getMana()>1F?mana.getMana()-1F:0F);
-				if(power%this.effectPerTicks==0) this.applyEffect(world, player, itemStack);
-				if(power%(this.effectPerTicks*3)==0) itemStack.hurtAndBreak(1, player, e->e.broadcastBreakEvent(player.getUsedItemHand()));
+				if(power%this.manaUseDelay==0) mana.setMana(mana.getMana()>1F?mana.getMana()-1F:0F);
+				if(power%this.effectUseDelay==0) this.applyEffect(world, player, itemStack);
+				if(power%(this.effectUseDelay*3)==0) itemStack.hurtAndBreak(1, player, e->e.broadcastBreakEvent(player.getUsedItemHand()));
 			}
 		}
 	}

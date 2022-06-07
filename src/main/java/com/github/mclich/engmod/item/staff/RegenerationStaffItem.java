@@ -5,17 +5,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
 import net.minecraft.world.World;
 
-public class RegenerationStaffItem extends ReversibleStaffItem
+public class RegenerationStaffItem extends PermanentStaffItem
 {
 	public static final String ID="regeneration_staff";
-	
+
 	public RegenerationStaffItem()
 	{
-		super(Rarity.COMMON, 200, 7F, 3F, 1.5F);
+		super(Rarity.COMMON, 0x6679F2, 200, 5, 15);
 	}
-	
+
 	@Override
-	public boolean isValidRepairItem(ItemStack itemStack, ItemStack repairStack)
+	public boolean isValidRepairItem(ItemStack staffStack, ItemStack repairStack)
 	{
 		return false;
 	}
@@ -23,6 +23,6 @@ public class RegenerationStaffItem extends ReversibleStaffItem
 	@Override
 	public void applyEffect(World world, LivingEntity entity, ItemStack itemStack)
 	{
-		entity.heal(this.effectToApply);
+		entity.heal(1F);
 	}
 }

@@ -20,27 +20,27 @@ public abstract class NetworkHandler
 		NetworkHandler.PROTOCOL_VERSION::equals
 	);
 	
-	public static <MSG> void sendToServer(MSG msg)
+	public static <M> void sendToServer(M msg)
 	{
 		NetworkHandler.CHANNEL.sendToServer(msg);
 	}
 	
-	public static <MSG> void sendToPlayer(ServerPlayerEntity player, MSG msg)
+	public static <M> void sendToPlayer(ServerPlayerEntity player, M msg)
 	{
 		NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(()->player), msg);
 	}
 	
-	public static <MSG> void sendToTrackingEntity(Entity entity, MSG msg)
+	public static <M> void sendToTrackingEntity(Entity entity, M msg)
 	{
 		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity), msg);
 	}
 	
-	public static <MSG> void sendToTrackingChunk(Chunk chunk, MSG msg)
+	public static <M> void sendToTrackingChunk(Chunk chunk, M msg)
 	{
 		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(()->chunk), msg);
 	}
 
-	public static <MSG> void sendToAllPlayers(MSG msg)
+	public static <M> void sendToAllPlayers(M msg)
 	{
 		NetworkHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), msg);
 	}

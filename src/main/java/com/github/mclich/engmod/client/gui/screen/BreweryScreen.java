@@ -1,6 +1,7 @@
 package com.github.mclich.engmod.client.gui.screen;
 
 import com.github.mclich.engmod.ElderNorseGods;
+import com.github.mclich.engmod.block.BreweryBlock;
 import com.github.mclich.engmod.block.container.BreweryContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -11,7 +12,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class BreweryScreen extends ContainerScreen<BreweryContainer>
 {
-	private static final ResourceLocation TEXTURE=new ResourceLocation(ElderNorseGods.MOD_ID+":textures/gui/container/brewery.png");
+	private static final ResourceLocation TEXTURE=new ResourceLocation(ElderNorseGods.MOD_ID, "textures/gui/container/"+BreweryBlock.ID+".png");
 	private static final int[] BUBBLES_CORDS=new int[]{17, 14, 11, 8, 5, 2, 0};
 	
 	public BreweryScreen(BreweryContainer container, PlayerInventory inventory, ITextComponent name)
