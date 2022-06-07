@@ -1,5 +1,6 @@
 package com.github.mclich.engmod.effect;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.register.ENGEffects;
@@ -7,12 +8,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.GameSettings;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.IngameGui;
-//import net.minecraft.client.gui.screen.IngameMenuScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.util.InputMappings.Input;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.potion.Effect;
@@ -22,6 +25,7 @@ import net.minecraftforge.client.event.GuiContainerEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.MouseClickedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -35,12 +39,16 @@ public class AnemiaEffect extends Effect
 {
 	public static final String ID="anemia";
 	
+	private final Input keyDrop;
+	private final Input keySwapOffhand;
+	
 	public AnemiaEffect()
 	{
 		super(EffectType.HARMFUL, 0xDAE054);
+		@SuppressWarnings("resource") GameSettings options=Minecraft.getInstance().options;
+		this.keyDrop=options.keyDrop.getKey();
+		this.keySwapOffhand=options.keySwapOffhand.getKey();
 		//dizziness, stun, vertigo
-		//EntityItemPickupEvent
-		//ItemTossEvent
 	}
 	
 	public static EffectInstance getInstance()
@@ -49,36 +57,30 @@ public class AnemiaEffect extends Effect
 	}
 	
 	@Override
-	public void renderHUDEffect(EffectInstance effect, AbstractGui gui, MatrixStack matrixStack, int x, int y, float z, float alpha)
+	public boolean isDurationEffectTick(int duration, int amplifier)
 	{
-		/*
-		Minecraft mc=Minecraft.getInstance();
-		MainWindow window=mc.getWindow();
-		int a=window.getGuiScaledWidth()/2-72;
-		int b=window.getGuiScaledHeight()-3;
-		if(mc.player.hasItemInSlot(EquipmentSlotType.OFFHAND))
+		return duration==400||duration==1;
+	}
+	
+	@Override
+	public void applyEffectTick(LivingEntity entity, int amplifier)
+	{
+		@SuppressWarnings("resource") GameSettings options=Minecraft.getInstance().options;
+		if(entity.getEffect(this).getDuration()==400)
 		{
-			IngameGui.fill(matrixStack, a-29, b, a-45, b-16, EventHandler.SLOT_FILL);
-			EventHandler.enableDepthFunc();
-			IngameGui.fill(matrixStack, a-29, b, a-45, b-16, EventHandler.ITEM_FILL);
-			EventHandler.disableDepthFunc();
+			options.keyDrop.setKey(InputMappings.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_UNKNOWN));
+			options.keySwapOffhand.setKey(InputMappings.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_UNKNOWN));
 		}
-		for(int i=0; i<9; i++)
+		if(entity.getEffect(this).getDuration()==1)
 		{
-			IngameGui.fill(matrixStack, a+i*20, b, a+i*20-16, b-16, EventHandler.SLOT_FILL);
-			EventHandler.enableDepthFunc();
-			IngameGui.fill(matrixStack, a+i*20, b, a+i*20-16, b-16, EventHandler.ITEM_FILL);
-			EventHandler.disableDepthFunc();
+			options.keyDrop.setKey(this.keyDrop);
+			options.keySwapOffhand.setKey(this.keySwapOffhand);
 		}
-		*/
 	}
 	
 	@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.FORGE)
 	private static abstract class EventHandler
 	{
-		private static final int SLOT_FILL=0x30FF0000;
-		private static final int ITEM_FILL=0x30FFFFFF;
-		
 		private static void enableDepthFunc()
 		{
 			RenderSystem.enableDepthTest();
@@ -92,21 +94,23 @@ public class AnemiaEffect extends Effect
 		}
 		
 		@SuppressWarnings("resource")
-		private static void drawSlots(ContainerScreen<?> screen, MatrixStack matrixStack, boolean flag)
+		private static void drawSlots(ContainerScreen<?> screen, MatrixStack matrixStack, Fill fill)
 		{
+			boolean flag=fill==Fill.ITEM;
 			if(!screen.getMinecraft().player.hasEffect(ENGEffects.ANEMIA.get())) return;
 			int i=(flag?0:1)*screen.getGuiLeft();
 			int j=(flag?0:1)*screen.getGuiTop();
 			for(Slot slot:screen.getMenu().slots)
 			{
 				if(flag) EventHandler.enableDepthFunc();
-				IngameGui.fill(matrixStack, slot.x+i, slot.y+j, slot.x+i+16, slot.y+j+16, flag?EventHandler.ITEM_FILL:EventHandler.SLOT_FILL);
+				IngameGui.fill(matrixStack, slot.x+i, slot.y+j, slot.x+i+16, slot.y+j+16, fill.color);
 				if(flag) EventHandler.disableDepthFunc();
 			}
 		}
 		
-		private static void drawHotbarSlots(ElementType type, MatrixStack matrixStack, boolean flag)
+		private static void drawHotbarSlots(ElementType type, MatrixStack matrixStack, Fill fill)
 		{
+			boolean flag=fill==Fill.ITEM;
 			Minecraft mc=Minecraft.getInstance();
 			if(type!=ElementType.HOTBAR||!mc.player.hasEffect(ENGEffects.ANEMIA.get())) return;
 			MainWindow window=mc.getWindow();
@@ -115,7 +119,7 @@ public class AnemiaEffect extends Effect
 			if(mc.player.hasItemInSlot(EquipmentSlotType.OFFHAND))
 			{
 				if(flag) EventHandler.enableDepthFunc();
-				IngameGui.fill(matrixStack, i-29, j, i-45, j-16, flag?EventHandler.ITEM_FILL:EventHandler.SLOT_FILL);
+				IngameGui.fill(matrixStack, i-29, j, i-45, j-16, fill.color);
 				if(flag) EventHandler.disableDepthFunc();
 			}
 			for(int k=0; k<9; k++)
@@ -129,64 +133,42 @@ public class AnemiaEffect extends Effect
 				GL_EQUAL - no transparency
 				GL_LESS - no transparency
 				GL_NEVER - no transparency
-				 */
+				*/
 				if(flag) EventHandler.enableDepthFunc();
 				else
 				{
 					RenderSystem.enableBlend();
 					RenderSystem.blendFunc(SourceFactor.CONSTANT_COLOR, DestFactor.ONE_MINUS_CONSTANT_COLOR);
 				}
-				IngameGui.fill(matrixStack, i+k*20, j, i+k*20-16, j-16, flag?EventHandler.ITEM_FILL:EventHandler.SLOT_FILL);
+				IngameGui.fill(matrixStack, i+k*20, j, i+k*20-16, j-16, fill.color);
 				if(flag) EventHandler.disableDepthFunc();
-				else
-				{
-					//RenderSystem.defaultBlendFunc();
-					RenderSystem.disableBlend();
-				}
+				else RenderSystem.disableBlend();
 			}
 		}
 		
 		@SubscribeEvent
 		public static void drawBgSlots(GuiContainerEvent.DrawBackground event)
 		{
-			EventHandler.drawSlots(event.getGuiContainer(), event.getMatrixStack(), false);
+			EventHandler.drawSlots(event.getGuiContainer(), event.getMatrixStack(), Fill.SLOT);
 		}
 		
 		@SubscribeEvent
 		public static void drawFgSlots(GuiContainerEvent.DrawForeground event)
 		{
-			EventHandler.drawSlots(event.getGuiContainer(), event.getMatrixStack(), true);
+			EventHandler.drawSlots(event.getGuiContainer(), event.getMatrixStack(), Fill.ITEM);
 		}
 		
 		@SubscribeEvent
 		public static void drawBgHotbarSlots(RenderGameOverlayEvent.Pre event)
 		{
-			EventHandler.drawHotbarSlots(event.getType(), event.getMatrixStack(), false);
+			EventHandler.drawHotbarSlots(event.getType(), event.getMatrixStack(), Fill.SLOT);
 		}
 		
 		@SubscribeEvent
 		public static void drawFgHotbarSlots(RenderGameOverlayEvent.Post event)
 		{
-			EventHandler.drawHotbarSlots(event.getType(), event.getMatrixStack(), true);
+			EventHandler.drawHotbarSlots(event.getType(), event.getMatrixStack(), Fill.ITEM);
 		}
-		
-		/*
-		@SubscribeEvent
-		public static void cancelKeyPress(KeyboardKeyEvent event)
-		{
-			ElderNorseGods.LOGGER.info("pressed");
-			Minecraft mc=event.getGui().getMinecraft();
-			if(mc.player==null) return;
-			ElderNorseGods.LOGGER.info("passed 1");
-			if(!mc.player.hasEffect(ENGEffects.ANEMIA.get())) return;
-			ElderNorseGods.LOGGER.info("passed 2");
-			if(mc.options.keyDrop.getKey().getValue()==event.getKeyCode()||mc.options.keySwapOffhand.getKey().getValue()==event.getKeyCode())
-			{
-				event.setCanceled(true);
-				ElderNorseGods.LOGGER.info("canceled");
-			}
-		}
-		*/
 		
 		@SubscribeEvent
 		public static void cancelGameClick(PlayerInteractEvent event)
@@ -209,6 +191,28 @@ public class AnemiaEffect extends Effect
 			if(event.getGui() instanceof ContainerScreen&&event.getGui().getMinecraft().player.hasEffect(ENGEffects.ANEMIA.get()))
 			{
 				event.setCanceled(true);
+			}
+		}
+		
+		@SubscribeEvent
+		public static void cancelItemPickup(EntityItemPickupEvent event)
+		{
+			if(event.getPlayer().hasEffect(ENGEffects.ANEMIA.get()))
+			{
+				event.setCanceled(true);
+			}
+		}
+		
+		private static enum Fill
+		{
+			SLOT(0x30FF0000),
+			ITEM(0x30FFFFFF);
+			
+			private int color;
+
+			private Fill(int color)
+			{
+				this.color=color;
 			}
 		}
 	}
