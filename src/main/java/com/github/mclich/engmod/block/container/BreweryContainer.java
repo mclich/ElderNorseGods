@@ -27,11 +27,12 @@ public class BreweryContainer extends Container
     {
     	this(window, pInventory.player.getCommandSenderWorld().getBlockEntity(data.readBlockPos()), pInventory, pInventory.player);
     }
-    
-    public BreweryContainer(int window, TileEntity tileEntity, PlayerInventory pInventory, PlayerEntity player)
+
+	@SuppressWarnings("ConstantConditions")
+    public BreweryContainer(int window, TileEntity tileEntity, PlayerInventory pInventory, @SuppressWarnings("unused") PlayerEntity player)
 	{
 		super(ENGContainers.BREWERY_CONTAINER.get(), window);
-		if(tileEntity!=null&&tileEntity instanceof BreweryTileEntity) this.tileEntity=(BreweryTileEntity)tileEntity;
+		if(tileEntity instanceof BreweryTileEntity) this.tileEntity=(BreweryTileEntity)tileEntity;
 		this.recipes=this.tileEntity.getLevel().getRecipeManager().getAllRecipesFor(ENGRecipeTypes.getBrewingType());
         if(this.tileEntity!=null)
         {
@@ -86,7 +87,8 @@ public class BreweryContainer extends Container
 	{
 		return this.recipes.stream().anyMatch(r->r.getResultItem().getItem()==itemStack.getItem());
 	}
-	
+
+	@SuppressWarnings("unused")
 	public float getExperience()
 	{
 		return this.tileEntity.getExperience();
@@ -110,14 +112,14 @@ public class BreweryContainer extends Container
 	@Override
 	public boolean stillValid(PlayerEntity player)
 	{
-		return this.tileEntity!=null?this.tileEntity.stillValid(player):false;
+		return this.tileEntity!=null&&this.tileEntity.stillValid(player);
 	}
 	
 	@Override
 	public ItemStack quickMoveStack(PlayerEntity player, int slotIndex)
 	{
 		Slot slot=this.slots.get(slotIndex);
-		ItemStack itemStack=ItemStack.EMPTY;
+		@SuppressWarnings("all") ItemStack itemStack=ItemStack.EMPTY;
 		if(slot!=null&&slot.hasItem())
 		{
 			itemStack=slot.getItem();

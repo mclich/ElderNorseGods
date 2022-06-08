@@ -30,8 +30,7 @@ public class ManaHandler implements IManaHandler
 	public void setMana(float amount)
 	{
 		if(amount<0F) this.mana=0F;
-		else if(amount>20F) this.mana=20F;
-		else this.mana=amount;
+		else this.mana=Math.min(amount, 20F);
 	}
 
 	@Override

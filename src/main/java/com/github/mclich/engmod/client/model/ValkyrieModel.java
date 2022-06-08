@@ -5,7 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
+
 
 public class ValkyrieModel extends EntityModel<ValkyrieEntity>
 {
@@ -159,6 +159,7 @@ public class ValkyrieModel extends EntityModel<ValkyrieEntity>
 	@Override
 	public void setupAnim(ValkyrieEntity valkyrie, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
+		/*
 		if(valkyrie.isOnGround()&&true)
 		{
 			float f=1F;
@@ -176,6 +177,7 @@ public class ValkyrieModel extends EntityModel<ValkyrieEntity>
 			this.leftLeg.yRot=0F;
 			this.leftLeg.zRot=0F;
 		}
+		*/
 	}
 
 	@Override

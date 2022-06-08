@@ -32,8 +32,8 @@ public abstract class ENGBlocks
 	public static final RegistryObject<Block> HOP_BUSH=ENGBlocks.BLOCKS.register(HopBushBlock.ID, HopBushBlock::new);
 	public static final RegistryObject<Block> FIRE_LILY_FLOWER=ENGBlocks.BLOCKS.register("fire_lily", ()->new FlowerBlock(Effects.FIRE_RESISTANCE, 10, Block.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS)));
 	public static final RegistryObject<Block> FROST_HYACINTH_FLOWER=ENGBlocks.BLOCKS.register("frost_hyacinth", ()->new FlowerBlock(Effects.NIGHT_VISION, 10, Block.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS)));
-	public static final RegistryObject<Block> POTTED_FIRE_LILY_FLOWER=ENGBlocks.BLOCKS.register("potted_fire_lily", ()->new FlowerPotBlock(((FlowerPotBlock)Blocks.FLOWER_POT)::getEmptyPot, ENGBlocks.FIRE_LILY_FLOWER::get, Block.Properties.of(Material.DECORATION).instabreak().noOcclusion()));
-	public static final RegistryObject<Block> POTTED_FROST_HYACINTH_FLOWER=ENGBlocks.BLOCKS.register("potted_frost_hyacinth", ()->new FlowerPotBlock(((FlowerPotBlock)Blocks.FLOWER_POT)::getEmptyPot, ENGBlocks.FROST_HYACINTH_FLOWER::get, Block.Properties.of(Material.DECORATION).instabreak().noOcclusion()));
+	public static final RegistryObject<Block> POTTED_FIRE_LILY_FLOWER=ENGBlocks.BLOCKS.register("potted_fire_lily", ()->new FlowerPotBlock(((FlowerPotBlock)Blocks.FLOWER_POT)::getEmptyPot, ENGBlocks.FIRE_LILY_FLOWER, Block.Properties.of(Material.DECORATION).instabreak().noOcclusion()));
+	public static final RegistryObject<Block> POTTED_FROST_HYACINTH_FLOWER=ENGBlocks.BLOCKS.register("potted_frost_hyacinth", ()->new FlowerPotBlock(((FlowerPotBlock)Blocks.FLOWER_POT)::getEmptyPot, ENGBlocks.FROST_HYACINTH_FLOWER, Block.Properties.of(Material.DECORATION).instabreak().noOcclusion()));
 	public static final RegistryObject<Block> BREWERY=ENGBlocks.BLOCKS.register(BreweryBlock.ID, BreweryBlock::new);
 	public static final RegistryObject<Block> BARLEY_HAY_BLOCK=ENGBlocks.BLOCKS.register("barley_hay_block", ()->new HayBlock(Block.Properties.of(Material.GRASS, MaterialColor.COLOR_YELLOW).strength(0.5F).sound(SoundType.GRASS)));
 	public static final RegistryObject<Block> CUSTOM_BLOCK=ENGBlocks.BLOCKS.register("custom_block", ()->new Block(Block.Properties.of(Material.STONE).strength(5.0F, 6.0F).harvestLevel(2).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().sound(SoundType.NETHERITE_BLOCK)));
@@ -57,8 +57,8 @@ public abstract class ENGBlocks
     {
 		event.enqueueWork(()->
 		{
-			((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(ENGBlocks.FIRE_LILY_FLOWER.getId(), ENGBlocks.POTTED_FIRE_LILY_FLOWER::get);
-			((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(ENGBlocks.FROST_HYACINTH_FLOWER.getId(), ENGBlocks.POTTED_FROST_HYACINTH_FLOWER::get);
+			((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(ENGBlocks.FIRE_LILY_FLOWER.getId(), ENGBlocks.POTTED_FIRE_LILY_FLOWER);
+			((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(ENGBlocks.FROST_HYACINTH_FLOWER.getId(), ENGBlocks.POTTED_FROST_HYACINTH_FLOWER);
 		});
     }
 }

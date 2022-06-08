@@ -38,7 +38,7 @@ public class ManaDataPacket
 	
 	private static class PacketHandler
 	{
-		private static void handlePacket(ManaDataPacket packet, Supplier<NetworkEvent.Context> ctx)
+		private static void handlePacket(ManaDataPacket packet, @SuppressWarnings("unused") Supplier<NetworkEvent.Context> ctx)
 		{
 			Minecraft mc=Minecraft.getInstance();
 			mc.player.getCapability(ManaCapability.CAP_INSTANCE).ifPresent

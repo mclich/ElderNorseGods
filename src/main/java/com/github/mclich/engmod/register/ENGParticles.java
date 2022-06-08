@@ -23,7 +23,6 @@ public abstract class ENGParticles
 	@SubscribeEvent
 	public static void registerParticles(ParticleFactoryRegisterEvent event)
 	{
-		@SuppressWarnings("resource")
 		ParticleManager particleManager=Minecraft.getInstance().particleEngine;
 		particleManager.register(ENGParticles.STAFF_PARTICLE.get(), StaffParticle.Factory::new);
 	}

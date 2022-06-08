@@ -19,7 +19,8 @@ public abstract class NetworkHandler
 		NetworkHandler.PROTOCOL_VERSION::equals,
 		NetworkHandler.PROTOCOL_VERSION::equals
 	);
-	
+
+	@SuppressWarnings("unused")
 	public static <M> void sendToServer(M msg)
 	{
 		NetworkHandler.CHANNEL.sendToServer(msg);
@@ -34,12 +35,14 @@ public abstract class NetworkHandler
 	{
 		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity), msg);
 	}
-	
+
+	@SuppressWarnings("unused")
 	public static <M> void sendToTrackingChunk(Chunk chunk, M msg)
 	{
 		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(()->chunk), msg);
 	}
 
+	@SuppressWarnings("unused")
 	public static <M> void sendToAllPlayers(M msg)
 	{
 		NetworkHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), msg);

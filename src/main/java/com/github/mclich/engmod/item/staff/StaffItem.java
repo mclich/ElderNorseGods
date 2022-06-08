@@ -65,7 +65,6 @@ public abstract class StaffItem extends Item implements IVanishable
 		@SubscribeEvent
 		public static void renderFPV(RenderHandEvent event)
 		{
-			@SuppressWarnings("resource")
 			PlayerEntity player=Minecraft.getInstance().player;
 			if(player.isUsingItem()&&player.getUseItem().getItem() instanceof StaffItem&&player.getUsedItemHand()!=event.getHand())
 			{
