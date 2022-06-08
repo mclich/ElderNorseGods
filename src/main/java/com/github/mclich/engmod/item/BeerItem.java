@@ -18,7 +18,7 @@ public class BeerItem extends Item
 	
 	public BeerItem()
 	{
-		super(new Item.Properties().food(new Food.Builder().nutrition(4).saturationMod(0.6F).effect(()->DrunkennessEffect.getInstance(), 1F).build()).tab(ENGTabs.FOOD));
+		super(new Item.Properties().food(new Food.Builder().nutrition(4).saturationMod(0.6F).effect(DrunkennessEffect::getInstance, 1F).build()).tab(ENGTabs.FOOD));
 	}
 	
 	@Override

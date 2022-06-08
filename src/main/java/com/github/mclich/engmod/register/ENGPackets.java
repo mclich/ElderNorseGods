@@ -19,7 +19,7 @@ public abstract class ENGPackets
 			int id=0;
 			NetworkHandler.getChannel().registerMessage(id++, ItemActivationPacket.class, ItemActivationPacket::encode, ItemActivationPacket::decode, ItemActivationPacket::handle);
 			NetworkHandler.getChannel().registerMessage(id++, SpawnParticlesPacket.class, SpawnParticlesPacket::encode, SpawnParticlesPacket::decode, SpawnParticlesPacket::handle);
-			NetworkHandler.getChannel().registerMessage(id++, ManaDataPacket.class, ManaDataPacket::encode, ManaDataPacket::decode, ManaDataPacket::handle);
+			NetworkHandler.getChannel().registerMessage(id, ManaDataPacket.class, ManaDataPacket::encode, ManaDataPacket::decode, ManaDataPacket::handle);
 		});
     }
 }

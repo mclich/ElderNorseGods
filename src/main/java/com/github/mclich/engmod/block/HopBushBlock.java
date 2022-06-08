@@ -66,7 +66,7 @@ public class HopBushBlock extends SweetBerryBushBlock
 			int j=1+world.random.nextInt(2);
 			Block.popResource(world, blockPos, new ItemStack(ENGItems.HOP.get(), j+(flag?1:0)));
 			world.playSound((PlayerEntity)null, blockPos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundCategory.BLOCKS, 1.0F, 0.8F+world.random.nextFloat()*0.4F);
-			world.setBlock(blockPos, blockState.setValue(HopBushBlock.AGE, Integer.valueOf(1)), 2);
+			world.setBlock(blockPos, blockState.setValue(HopBushBlock.AGE, 1), 2);
 			return ActionResultType.sidedSuccess(world.isClientSide());
 		}
 		else return super.use(blockState, world, blockPos, playerEntity, hand, blockHitResult);

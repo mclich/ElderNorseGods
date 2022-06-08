@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@SuppressWarnings("unused")
 public abstract class ENGItems
 {
 	public static final DeferredRegister<Item> ITEMS=DeferredRegister.create(ForgeRegistries.ITEMS, ElderNorseGods.MOD_ID);
@@ -61,15 +62,15 @@ public abstract class ENGItems
 	public static abstract class PropsHelper
 	{
 		public static final ResourceLocation CASTING=new ResourceLocation(ElderNorseGods.MOD_ID, "casting");
-		public static final IItemPropertyGetter CASTTING_PROP=(itemStack, world, entity)->entity instanceof PlayerEntity&&entity.isUsingItem()&&entity.getUseItem()==itemStack&&itemStack.getItem() instanceof StaffItem?1F:0F;
+		public static final IItemPropertyGetter CASTING_PROP=(itemStack, world, entity)->entity instanceof PlayerEntity&&entity.isUsingItem()&&entity.getUseItem()==itemStack&&itemStack.getItem() instanceof StaffItem?1F:0F;
 		
 		@SubscribeEvent
 		public static void registerProperties(FMLClientSetupEvent event)
 		{
 			event.enqueueWork(()->
 			{
-				ItemModelsProperties.register(ENGItems.HEALING_STAFF.get(), PropsHelper.CASTING, PropsHelper.CASTTING_PROP);
-				ItemModelsProperties.register(ENGItems.REGENERATION_STAFF.get(), PropsHelper.CASTING, PropsHelper.CASTTING_PROP);
+				ItemModelsProperties.register(ENGItems.HEALING_STAFF.get(), PropsHelper.CASTING, PropsHelper.CASTING_PROP);
+				ItemModelsProperties.register(ENGItems.REGENERATION_STAFF.get(), PropsHelper.CASTING, PropsHelper.CASTING_PROP);
 			});
 		}
 	}
@@ -92,8 +93,8 @@ public abstract class ENGItems
         };
 		
 		public static final SpawnEggItem VALKYRIE_SPAWN_EGG=new SpawnEggItem(ENGEntities.VALKYRIE, 0x5bbcf4, 0xf8dd72, new Item.Properties().tab(ENGTabs.MISC));
-		
-		private static SpawnEggItem setupEgg(SpawnEggItem egg)
+
+		private static SpawnEggItem setupEgg(@SuppressWarnings("all") SpawnEggItem egg)
 		{
 			EggHelper.VANILLA_EGGS.put(egg.getType(null), egg);
 			DispenserBlock.registerBehavior(egg, EggHelper.DDIB);

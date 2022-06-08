@@ -57,7 +57,7 @@ public class ValkyrieEntity extends MonsterEntity
 		//this.goalSelector.addGoal(i++, new TemptGoal(this, 1.25D, ValkyrieEntity.TEMPTATION_ITEMS, false));
 		this.goalSelector.addGoal(i++, new WaterAvoidingRandomWalkingGoal(this, 0.8));
 		this.goalSelector.addGoal(i++, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-		this.goalSelector.addGoal(i++, new LookRandomlyGoal(this));
+		this.goalSelector.addGoal(i, new LookRandomlyGoal(this));
 	}
 	
 	@Override

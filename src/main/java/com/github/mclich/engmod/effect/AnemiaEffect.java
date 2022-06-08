@@ -16,6 +16,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.potion.Effect;
@@ -45,7 +46,7 @@ public class AnemiaEffect extends Effect
 	public AnemiaEffect()
 	{
 		super(EffectType.HARMFUL, 0xDAE054);
-		@SuppressWarnings("resource") GameSettings options=Minecraft.getInstance().options;
+		GameSettings options=Minecraft.getInstance().options;
 		this.keyDrop=options.keyDrop.getKey();
 		this.keySwapOffhand=options.keySwapOffhand.getKey();
 		//dizziness, stun, vertigo
@@ -59,22 +60,26 @@ public class AnemiaEffect extends Effect
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier)
 	{
-		return duration==400||duration==1;
+		return true;
 	}
 	
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier)
 	{
-		@SuppressWarnings("resource") GameSettings options=Minecraft.getInstance().options;
-		if(entity.getEffect(this).getDuration()==400)
+		PlayerEntity player=Minecraft.getInstance().player;
+		if(entity.getCommandSenderWorld().isClientSide()&&entity==player)
 		{
-			options.keyDrop.setKey(InputMappings.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_UNKNOWN));
-			options.keySwapOffhand.setKey(InputMappings.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_UNKNOWN));
-		}
-		if(entity.getEffect(this).getDuration()==1)
-		{
-			options.keyDrop.setKey(this.keyDrop);
-			options.keySwapOffhand.setKey(this.keySwapOffhand);
+			GameSettings options=Minecraft.getInstance().options;
+			if(entity.getEffect(this).getDuration()==400||!player.abilities.instabuild)
+			{
+				options.keyDrop.setKey(InputMappings.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_UNKNOWN));
+				options.keySwapOffhand.setKey(InputMappings.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_UNKNOWN));
+			}
+			if(entity.getEffect(this).getDuration()==1||player.abilities.instabuild)
+			{
+				options.keyDrop.setKey(this.keyDrop);
+				options.keySwapOffhand.setKey(this.keySwapOffhand);
+			}
 		}
 	}
 	
@@ -93,11 +98,11 @@ public class AnemiaEffect extends Effect
 			RenderSystem.disableDepthTest();
 		}
 		
-		@SuppressWarnings("resource")
 		private static void drawSlots(ContainerScreen<?> screen, MatrixStack matrixStack, Fill fill)
 		{
 			boolean flag=fill==Fill.ITEM;
-			if(!screen.getMinecraft().player.hasEffect(ENGEffects.ANEMIA.get())) return;
+			PlayerEntity player=screen.getMinecraft().player;
+			if(!player.hasEffect(ENGEffects.ANEMIA.get())||player.abilities.instabuild) return;
 			int i=(flag?0:1)*screen.getGuiLeft();
 			int j=(flag?0:1)*screen.getGuiTop();
 			for(Slot slot:screen.getMenu().slots)
@@ -112,7 +117,7 @@ public class AnemiaEffect extends Effect
 		{
 			boolean flag=fill==Fill.ITEM;
 			Minecraft mc=Minecraft.getInstance();
-			if(type!=ElementType.HOTBAR||!mc.player.hasEffect(ENGEffects.ANEMIA.get())) return;
+			if(type!=ElementType.HOTBAR||!mc.player.hasEffect(ENGEffects.ANEMIA.get())||mc.player.abilities.instabuild) return;
 			MainWindow window=mc.getWindow();
 			int i=window.getGuiScaledWidth()/2-72;
 			int j=window.getGuiScaledHeight()-3;
@@ -173,8 +178,9 @@ public class AnemiaEffect extends Effect
 		@SubscribeEvent
 		public static void cancelGameClick(PlayerInteractEvent event)
 		{
+			PlayerEntity player=event.getPlayer();
 			boolean correctEvent=!(event instanceof RightClickEmpty)&&!(event instanceof LeftClickEmpty);
-			if(event.getPlayer().hasEffect(ENGEffects.ANEMIA.get())&&correctEvent)
+			if(player.hasEffect(ENGEffects.ANEMIA.get())&&correctEvent&&!player.abilities.instabuild)
 			{
 				if(event instanceof RightClickBlock)
 				{
@@ -188,29 +194,25 @@ public class AnemiaEffect extends Effect
 		@SubscribeEvent
 		public static void cancelGuiClick(MouseClickedEvent.Pre event)
 		{
-			if(event.getGui() instanceof ContainerScreen&&event.getGui().getMinecraft().player.hasEffect(ENGEffects.ANEMIA.get()))
-			{
-				event.setCanceled(true);
-			}
+			PlayerEntity player=event.getGui().getMinecraft().player;
+			if(event.getGui() instanceof ContainerScreen&&player.hasEffect(ENGEffects.ANEMIA.get())&&!player.abilities.instabuild) event.setCanceled(true);
 		}
 		
 		@SubscribeEvent
 		public static void cancelItemPickup(EntityItemPickupEvent event)
 		{
-			if(event.getPlayer().hasEffect(ENGEffects.ANEMIA.get()))
-			{
-				event.setCanceled(true);
-			}
+			PlayerEntity player=event.getPlayer();
+			if(player.hasEffect(ENGEffects.ANEMIA.get())&&!player.abilities.instabuild) event.setCanceled(true);
 		}
 		
-		private static enum Fill
+		private enum Fill
 		{
 			SLOT(0x30FF0000),
 			ITEM(0x30FFFFFF);
 			
-			private int color;
+			private final int color;
 
-			private Fill(int color)
+			Fill(int color)
 			{
 				this.color=color;
 			}

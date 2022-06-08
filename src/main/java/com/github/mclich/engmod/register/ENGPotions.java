@@ -17,6 +17,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@SuppressWarnings("unused")
 @EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.MOD)
 public abstract class ENGPotions
 {

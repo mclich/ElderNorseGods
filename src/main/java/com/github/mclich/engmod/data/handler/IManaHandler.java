@@ -19,7 +19,8 @@ public interface IManaHandler
 		this.setMana(amount);
 		this.update(player);
 	}
-	
+
+	@SuppressWarnings("unused")
 	default void setAndUpdateStatus(ServerPlayerEntity player, boolean status)
 	{
 		this.setStatus(status);

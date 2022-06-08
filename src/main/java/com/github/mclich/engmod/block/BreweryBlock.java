@@ -32,6 +32,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
+
 public class BreweryBlock extends HorizontalBlock
 {
 	public static final String ID="brewery";
@@ -66,13 +68,14 @@ public class BreweryBlock extends HorizontalBlock
 	}
 	
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context)
+	public BlockState getStateForPlacement(@Nullable BlockItemUseContext context)
 	{
 		if(context==null) return this.defaultBlockState();
 		return this.defaultBlockState().setValue(BreweryBlock.FACING, context.getHorizontalDirection().getOpposite());
 	}
 	
 	@Override
+	@SuppressWarnings("deprecation")
 	public VoxelShape getShape(BlockState blockState, IBlockReader ibReader, BlockPos blockPos, ISelectionContext context)
 	{
 		return VoxelShapes.or(BreweryBlock.SHAPE_TOP, BreweryBlock.SHAPE_BOX);
@@ -125,6 +128,7 @@ public class BreweryBlock extends HorizontalBlock
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public ActionResultType use(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult blockRayTrace)
 	{
 		if(world.isClientSide()) return ActionResultType.SUCCESS;

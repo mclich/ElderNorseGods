@@ -42,7 +42,7 @@ public class SpawnParticlesPacket
 	
 	private static class PacketHandler
 	{
-		private static void handlePacket(SpawnParticlesPacket packet, Supplier<NetworkEvent.Context> ctx)
+		private static void handlePacket(SpawnParticlesPacket packet, @SuppressWarnings("unused") Supplier<NetworkEvent.Context> ctx)
 		{
 			Minecraft mc=Minecraft.getInstance();
 			mc.particleEngine.createTrackingEmitter(mc.level.getPlayerByUUID(packet.player), packet.particle, packet.lifetime);

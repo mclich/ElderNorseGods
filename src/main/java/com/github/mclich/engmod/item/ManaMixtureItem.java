@@ -18,7 +18,7 @@ public class ManaMixtureItem extends Item
 	
 	public ManaMixtureItem()
 	{
-		super(new Item.Properties().food(new Food.Builder().nutrition(2).saturationMod(0.6F).alwaysEat().effect(()->ReplenishmentEffect.getActivationInstance(), 1F).build()).stacksTo(1).rarity(Rarity.RARE).tab(ENGTabs.FOOD));
+		super(new Item.Properties().food(new Food.Builder().nutrition(2).saturationMod(0.6F).alwaysEat().effect(ReplenishmentEffect::getActivationInstance, 1F).build()).stacksTo(1).rarity(Rarity.RARE).tab(ENGTabs.FOOD));
 	}
 	
 	@Override

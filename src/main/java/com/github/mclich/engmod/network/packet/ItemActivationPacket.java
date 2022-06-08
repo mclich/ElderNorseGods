@@ -35,8 +35,7 @@ public class ItemActivationPacket
 	
 	private static class PacketHandler
 	{
-		@SuppressWarnings("resource")
-		private static void handlePacket(ItemActivationPacket packet, Supplier<NetworkEvent.Context> ctx)
+		private static void handlePacket(ItemActivationPacket packet, @SuppressWarnings("unused") Supplier<NetworkEvent.Context> ctx)
 		{
 			Minecraft.getInstance().gameRenderer.displayItemActivation(packet.toActivate);
 		}

@@ -12,5 +12,5 @@ public abstract class ENGSerializers
 {
 	public static final DeferredRegister<IRecipeSerializer<?>> SERIALIZERS=DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, ElderNorseGods.MOD_ID);
 	
-	public static final RegistryObject<IRecipeSerializer<?>> BREWERY_SERIALIZER=ENGSerializers.SERIALIZERS.register(BrewingRecipe.ID, ()->new BrewingRecipeSerializer());
+	public static final RegistryObject<IRecipeSerializer<?>> BREWERY_SERIALIZER=ENGSerializers.SERIALIZERS.register(BrewingRecipe.ID, BrewingRecipeSerializer::new);
 }

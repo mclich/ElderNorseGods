@@ -25,7 +25,8 @@ public class BrewingRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 		this.defaultExperience=defaultExperience;
 		this.defaultBrewingTime=defaultBrewingTime;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public BrewingRecipeSerializer(Supplier<BrewingRecipe> supplier)
 	{
 		this(supplier, 0.7F, 200);
@@ -33,7 +34,7 @@ public class BrewingRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 	
 	public BrewingRecipeSerializer()
 	{
-		this((location, result, bottle, ingredient, experience, brewingTime)->new BrewingRecipe(location, result, bottle, ingredient, experience, brewingTime), 0.7F, 200);
+		this(BrewingRecipe::new, 0.7F, 200);
 	}
 	
 	@Override
@@ -43,7 +44,7 @@ public class BrewingRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 		Ingredient bottle=Ingredient.fromJson(JSONUtils.isArrayNode(jsonFile, "bottle")?JSONUtils.getAsJsonArray(jsonFile, "bottle"):JSONUtils.getAsJsonObject(jsonFile, "bottle"));
 		Ingredient ingredient=Ingredient.fromJson(JSONUtils.isArrayNode(jsonFile, "ingredient")?JSONUtils.getAsJsonArray(jsonFile, "ingredient"):JSONUtils.getAsJsonObject(jsonFile, "ingredient"));
 		if(!jsonFile.has("result")) throw new JsonSyntaxException("Missing result, expected to find a string or object");
-		ItemStack itemstack=ItemStack.EMPTY;
+		@SuppressWarnings("all") ItemStack itemstack=ItemStack.EMPTY;
 		if(jsonFile.get("result").isJsonObject()) itemstack=ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(jsonFile, "result"));
 		else
 		{
@@ -68,7 +69,7 @@ public class BrewingRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 		
 	}
 	
-	private static interface Supplier<R extends BrewingRecipe>
+	private interface Supplier<R extends BrewingRecipe>
 	{
 		R create(ResourceLocation location, ItemStack result, Ingredient bottle, Ingredient ingredient, float experience, int brewingTime);
 	}

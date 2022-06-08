@@ -85,7 +85,7 @@ public class BreweryTileEntity extends LockableTileEntity implements ITickableTi
 		BrewingRecipe recipe=this.level.getRecipeManager().getRecipeFor(ENGRecipeTypes.getBrewingType(), this, this.level).orElse(null);
 		boolean hasRecipe=recipe!=null;
 		boolean hasFuel=this.fuelBar>0;
-		boolean isResultValid=hasRecipe?this.getItem(5).isEmpty()||this.getItem(5).getItem()==recipe.getResultItem().getItem():false;
+		boolean isResultValid=hasRecipe&&(this.getItem(5).isEmpty()||this.getItem(5).getItem()==recipe.getResultItem().getItem());
 		boolean isBrewable=hasRecipe&&hasFuel&&isResultValid;
 		for(int i=0; i<3; i++)
 		{

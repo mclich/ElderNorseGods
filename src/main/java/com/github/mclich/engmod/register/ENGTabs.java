@@ -1,6 +1,5 @@
 package com.github.mclich.engmod.register;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,10 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.NonNullList;
 import com.github.mclich.engmod.register.ENGItems.EggHelper;
+import net.minecraftforge.fml.RegistryObject;
 
+@SuppressWarnings("unused")
 public abstract class ENGTabs
 {
-	private static final Comparator<ItemStack> NAME_COMPARATOR=(is1, is2)->is1.getItem().getDescriptionId().compareTo(is2.getItem().getDescriptionId());
+	private static final Comparator<ItemStack> NAME_COMPARATOR=Comparator.comparing(is->is.getItem().getDescriptionId());
 	private static final Comparator<ItemStack> FOOD_COMPARATOR=(is1, is2)->Integer.compare(is2.getItem().getFoodProperties().getNutrition(), is1.getItem().getFoodProperties().getNutrition());
 	private static final int DELAY=3*20;
 	
@@ -75,7 +76,7 @@ public abstract class ENGTabs
 		public ItemStack getIconItem()
 		{
 			this.counter++;
-			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(r->r.get()).collect(Collectors.toList());
+			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(RegistryObject::get).collect(Collectors.toList());
 			if(this.counter>=tabItems.size()*ENGTabs.DELAY) this.counter=0;
 			return ENGTabs.currentIcon(this, tabItems, this.counter);
 		}
@@ -84,7 +85,7 @@ public abstract class ENGTabs
 		public void fillItemList(NonNullList<ItemStack> items)
 		{
 			super.fillItemList(items);
-			Collections.sort(items, ENGTabs.NAME_COMPARATOR);
+			items.sort(ENGTabs.NAME_COMPARATOR);
 			//Collections.sort(items, (itemStack1, itemStack2)->Float.compare(((BlockItem)itemStack1.getItem()).getBlock().getStateForPlacement(null).getDestroySpeed(null, null), ((BlockItem)itemStack2.getItem()).getBlock().getStateForPlacement(null).getDestroySpeed(null, null)));
 		}
 	};
@@ -103,7 +104,7 @@ public abstract class ENGTabs
 		public ItemStack getIconItem()
 		{
 			this.counter++;
-			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(r->r.get()).collect(Collectors.toList());
+			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(RegistryObject::get).collect(Collectors.toList());
 			tabItems.add(EggHelper.VALKYRIE_SPAWN_EGG);
 			if(this.counter>=tabItems.size()*ENGTabs.DELAY) this.counter=0;
 			return ENGTabs.currentIcon(this, tabItems, this.counter);
@@ -124,7 +125,7 @@ public abstract class ENGTabs
 		public ItemStack getIconItem()
 		{
 			this.counter++;
-			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(r->r.get()).collect(Collectors.toList());
+			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(RegistryObject::get).collect(Collectors.toList());
 			if(this.counter>=tabItems.size()*ENGTabs.DELAY) this.counter=0;
 			return ENGTabs.currentIcon(this, tabItems, this.counter);
 		}
@@ -133,7 +134,7 @@ public abstract class ENGTabs
 		public void fillItemList(NonNullList<ItemStack> items)
 		{
 			super.fillItemList(items);
-			Collections.sort(items, ENGTabs.FOOD_COMPARATOR);
+			items.sort(ENGTabs.FOOD_COMPARATOR);
 		}
 	};
 	
