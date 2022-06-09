@@ -45,8 +45,8 @@ public abstract class PermanentStaffItem extends StaffItem
 		}
 		textField.add(StringTextComponent.EMPTY);
 		textField.add(new TranslationTextComponent("staff.engmod.used").withStyle(TextFormatting.GRAY));
-		textField.add(new TranslationTextComponent("staff.engmod.perm_mana", StaffItem.toRoundedString(20F/this.manaUseDelay)).withStyle(TextFormatting.DARK_GREEN));
-		textField.add(new TranslationTextComponent("staff.engmod.perm_effect_heal", StaffItem.toRoundedString(20F/this.effectUseDelay)).withStyle(TextFormatting.DARK_GREEN));
+		textField.add(new TranslationTextComponent("staff.engmod.perm_mana", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.manaUseDelay)).withStyle(TextFormatting.DARK_GREEN));
+		textField.add(new TranslationTextComponent("staff.engmod.perm_effect_heal", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.effectUseDelay)).withStyle(TextFormatting.DARK_GREEN));
 	}
 
 	@Override

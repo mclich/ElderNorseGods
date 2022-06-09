@@ -39,7 +39,7 @@ public abstract class ENGTabs
 		@Override
 		public boolean hasEnchantmentCategory(EnchantmentType type)
 		{
-			return super.hasEnchantmentCategory(type)||type==ENGEnchantments.Types.PICKAXE_ONLY;
+			return super.hasEnchantmentCategory(type)||type==ENGEnchantments.Types.PICKAXE_ONLY||type==ENGEnchantments.Types.DAMAGING;
 		}
 
 		@Override

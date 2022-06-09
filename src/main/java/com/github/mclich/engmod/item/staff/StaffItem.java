@@ -35,11 +35,6 @@ public abstract class StaffItem extends Item implements IVanishable
 		return player.getItemInHand(useItemHand==Hand.MAIN_HAND?Hand.OFF_HAND:Hand.MAIN_HAND).isShield(player);
 	}
 	
-	protected static String toRoundedString(float number)
-	{
-		return number%1==0?Integer.toString((int)number):Float.toString(Math.round(number*10)/10F);
-	}
-	
 	@Override
 	public abstract boolean isValidRepairItem(ItemStack staffStack, ItemStack repairStack);
 	

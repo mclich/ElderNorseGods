@@ -52,11 +52,11 @@ public abstract class ReversibleStaffItem extends StaffItem
 			ItemStack.appendEnchantmentNames(textField, itemStack.getEnchantmentTags());
 			textField.add(StringTextComponent.EMPTY);
 		}
-		textField.add(new TranslationTextComponent("staff.engmod.cooldown", StaffItem.toRoundedString(this.cooldown)).withStyle(TextFormatting.RED));
+		textField.add(new TranslationTextComponent("staff.engmod.cooldown", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.cooldown)).withStyle(TextFormatting.RED));
 		textField.add(StringTextComponent.EMPTY);
 		textField.add(new TranslationTextComponent("staff.engmod.used").withStyle(TextFormatting.GRAY));
-		textField.add(new TranslationTextComponent("staff.engmod.rev_mana", StaffItem.toRoundedString(this.manaToConsume)).withStyle(TextFormatting.DARK_GREEN));
-		textField.add(new TranslationTextComponent("staff.engmod.rev_effect_regen", StaffItem.toRoundedString(this.effectToApply)).withStyle(TextFormatting.DARK_GREEN));
+		textField.add(new TranslationTextComponent("staff.engmod.rev_mana", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.manaToConsume)).withStyle(TextFormatting.DARK_GREEN));
+		textField.add(new TranslationTextComponent("staff.engmod.rev_effect_regen", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.effectToApply)).withStyle(TextFormatting.DARK_GREEN));
 	}
 
 	@Override
