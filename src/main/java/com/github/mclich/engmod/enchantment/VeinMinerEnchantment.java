@@ -32,15 +32,15 @@ public class VeinMinerEnchantment extends Enchantment
 	}
 
 	@Override
-	public int getMinCost(int amount)
+	public int getMinCost(int level)
 	{
-		return amount*15;
+		return level*15;
 	}
 	
 	@Override
-	public int getMaxCost(int amount)
+	public int getMaxCost(int level)
 	{
-		return this.getMinCost(amount)+45;
+		return this.getMinCost(level)+45;
 	}
 	
 	@Override
