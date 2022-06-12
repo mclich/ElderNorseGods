@@ -45,7 +45,7 @@ public class AnemiaEffect extends Effect
 	
 	public AnemiaEffect()
 	{
-		super(EffectType.HARMFUL, 0xDAE054);
+		super(EffectType.HARMFUL, 0xED7E7E);
 		GameSettings options=Minecraft.getInstance().options;
 		this.keyDrop=options.keyDrop.getKey();
 		this.keySwapOffhand=options.keySwapOffhand.getKey();

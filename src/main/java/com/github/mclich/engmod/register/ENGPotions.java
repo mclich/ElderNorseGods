@@ -3,6 +3,7 @@ package com.github.mclich.engmod.register;
 import java.lang.reflect.Method;
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.effect.AnemiaEffect;
+import com.github.mclich.engmod.effect.LossEffect;
 import com.github.mclich.engmod.effect.ReplenishmentEffect;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
@@ -24,6 +25,7 @@ public abstract class ENGPotions
 	public static final DeferredRegister<Potion> POTIONS=DeferredRegister.create(ForgeRegistries.POTION_TYPES, ElderNorseGods.MOD_ID);
 	
 	public static final RegistryObject<Potion> ANEMIA=ENGPotions.POTIONS.register(AnemiaEffect.ID, ()->new Potion(AnemiaEffect.getInstance()));
+	public static final RegistryObject<Potion> LOSING=ENGPotions.POTIONS.register(LossEffect.POTION_ID, ()->new Potion(LossEffect.getInstance()));
 	public static final RegistryObject<Potion> REPLENISHMENT=ENGPotions.POTIONS.register(ReplenishmentEffect.ID, ()->new Potion(ReplenishmentEffect.getInstance()));
 	
 	@SubscribeEvent
