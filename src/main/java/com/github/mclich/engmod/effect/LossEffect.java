@@ -2,31 +2,29 @@ package com.github.mclich.engmod.effect;
 
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.register.ENGEffects;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
-import net.minecraft.entity.ai.brain.schedule.Activity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.monster.piglin.PiglinBruteEntity;
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.entity.monster.piglin.PiglinTasks;
-import net.minecraft.entity.passive.FoxEntity;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.entity.passive.StriderEntity;
-import net.minecraft.entity.passive.horse.AbstractHorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectType;
-import net.minecraft.potion.InstantEffect;
-import net.minecraft.util.DamageSource;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToAccessFieldException;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.InstantenousMobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.monster.piglin.Piglin;
+import net.minecraft.world.entity.monster.piglin.PiglinAi;
+import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.schedule.Activity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper.UnableToAccessFieldException;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
@@ -35,19 +33,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class LossEffect extends InstantEffect
+public class LossEffect extends InstantenousMobEffect
 {
     public static final String ID="instant_loss";
     public static final String POTION_ID="losing";
 
     public LossEffect()
     {
-        super(EffectType.HARMFUL, 0xBABABA);
+        super(MobEffectCategory.HARMFUL, 0xBABABA);
     }
 
-    public static EffectInstance getInstance()
+    public static MobEffectInstance getInstance()
     {
-        return new EffectInstance(ENGEffects.LOSS.get(), 1);
+        return new MobEffectInstance(ENGEffects.LOSS.get(), 1);
     }
 
     @Override
@@ -60,10 +58,9 @@ public class LossEffect extends InstantEffect
     public void applyInstantenousEffect(@Nullable Entity potion, @Nullable Entity thrower, LivingEntity entity, int amplifier, double health)
     {
         ThreadLocalRandom random=ThreadLocalRandom.current();
-        if(entity instanceof PlayerEntity)                          //probably bagged!!!
+        if(entity instanceof Player player)                          //probably bagged!!!
         {
-            PlayerEntity player=(PlayerEntity)entity;
-            PlayerInventory inventory=player.inventory;
+            Inventory inventory=player.getInventory();
             List<ItemStack> allItems=Stream.of(inventory.items, inventory.armor, inventory.offhand).flatMap(Collection::stream).collect(Collectors.toList());
             List<ItemStack> nonEmptyItems=MethodHandler.obtainNonEmptyItems(allItems);
             if(!nonEmptyItems.isEmpty())
@@ -73,30 +70,28 @@ public class LossEffect extends InstantEffect
                 MethodHandler.dropItemAt(randomItem, player);
             }
         }
-        else if(entity instanceof FoxEntity)
+        else if(entity instanceof Fox fox)
         {
-            FoxEntity fox=(FoxEntity)entity;
-            ItemStack mouthItem=fox.getItemBySlot(EquipmentSlotType.MAINHAND);
+            ItemStack mouthItem=fox.getItemBySlot(EquipmentSlot.MAINHAND);
             if(!mouthItem.isEmpty())
             {
-                fox.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+                fox.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
                 MethodHandler.dropItemAt(mouthItem, fox);
             }
         }
-        else if(entity instanceof PigEntity||entity instanceof StriderEntity)
+        else if(entity instanceof Pig||entity instanceof Strider)
         {
-            if(((IEquipable)entity).isSaddled())
+            if(((Saddleable)entity).isSaddled())
             {
-                if(entity instanceof PigEntity) MethodHandler.unequipSaddle(PigEntity.class, (PigEntity)entity);
-                else MethodHandler.unequipSaddle(StriderEntity.class, (StriderEntity)entity);
+                if(entity instanceof Pig) MethodHandler.unequipSaddle(Pig.class, (Pig)entity);
+                else MethodHandler.unequipSaddle(Strider.class, (Strider)entity);
                 MethodHandler.dropItemAt(new ItemStack(Items.SADDLE), entity);
                 entity.ejectPassengers();
             }
         }
-        else if(entity instanceof AbstractHorseEntity)
+        else if(entity instanceof AbstractHorse horse)
         {
-            AbstractHorseEntity horse=(AbstractHorseEntity)entity;
-            Inventory inventory=MethodHandler.obtainInv(AbstractHorseEntity.class, horse);
+            SimpleContainer inventory=MethodHandler.obtainInv(AbstractHorse.class, horse);
             List<ItemStack> items=MethodHandler.obtainInvItems(inventory);
             List<ItemStack> nonEmptyItems=MethodHandler.obtainNonEmptyItems(items);
             if(!nonEmptyItems.isEmpty())
@@ -107,10 +102,9 @@ public class LossEffect extends InstantEffect
                 if(randomItem.getItem()==Items.SADDLE) horse.ejectPassengers();
             }
         }
-        else if(entity instanceof VillagerEntity)
+        else if(entity instanceof Villager villager)
         {
-            VillagerEntity villager=(VillagerEntity)entity;
-            Inventory inventory=villager.getInventory();
+            SimpleContainer inventory=villager.getInventory();
             List<ItemStack> items=MethodHandler.obtainInvItems(inventory);
             List<ItemStack> nonEmptyItems=MethodHandler.obtainNonEmptyItems(items);
             if(!nonEmptyItems.isEmpty())
@@ -122,9 +116,8 @@ public class LossEffect extends InstantEffect
             MethodHandler.performTargeting(villager, thrower, true);
             if(thrower instanceof LivingEntity) MethodHandler.makeVillagerRunAway(villager, (LivingEntity)thrower);
         }
-        else if(entity instanceof EndermanEntity)
+        else if(entity instanceof EnderMan enderman)
         {
-            EndermanEntity enderman=(EndermanEntity)entity;
             BlockState carriedBlock=enderman.getCarriedBlock();
             if(carriedBlock!=null)
             {
@@ -134,10 +127,9 @@ public class LossEffect extends InstantEffect
             enderman.hurt(DamageSource.indirectMagic(potion, thrower), 0F);
             MethodHandler.performTargeting(enderman, thrower, false);
         }
-        else if(entity instanceof PiglinEntity)
+        else if(entity instanceof Piglin piglin)
         {
-            PiglinEntity piglin=(PiglinEntity)entity;
-            Inventory inventory=MethodHandler.obtainInv(PiglinEntity.class, piglin);
+            SimpleContainer inventory=MethodHandler.obtainInv(Piglin.class, piglin);
             List<ItemStack> invItems=MethodHandler.obtainInvItems(inventory);
             List<ItemStack> slotItems=MethodHandler.obtainSlotItems(piglin);
             List<ItemStack> notEmptyItems=MethodHandler.obtainNonEmptyItems(Stream.concat(invItems.stream(), slotItems.stream()));
@@ -148,23 +140,23 @@ public class LossEffect extends InstantEffect
                 else MethodHandler.findItemAndSetEmpty(randomItem, piglin);
                 MethodHandler.dropItemAt(randomItem, piglin);
             }
-            if(thrower instanceof PlayerEntity) PiglinTasks.angerNearbyPiglins((PlayerEntity)thrower, true);
+            if(thrower instanceof Player) PiglinAi.angerNearbyPiglins((Player)thrower, true);
         }
         else if(MethodHandler.isCorrectMonster(entity))
         {
-            MonsterEntity monster=(MonsterEntity)entity;
+            Monster monster=(Monster)entity;
             List<ItemStack> items=MethodHandler.obtainNonEmptyItems(MethodHandler.obtainSlotItems(monster));
             if(!items.isEmpty())
             {
                 ItemStack randomItem=items.get(random.nextInt(items.size()));
                 MethodHandler.findItemAndSetEmpty(randomItem, monster);
                 MethodHandler.dropItemAt(randomItem, monster);
-                if(monster instanceof PillagerEntity) ((PillagerEntity)monster).setChargingCrossbow(false);
+                if(monster instanceof Pillager) ((Pillager)monster).setChargingCrossbow(false);
             }
-            if(monster instanceof ZombifiedPiglinEntity)
+            if(monster instanceof ZombifiedPiglin)
             {
                 MethodHandler.performTargeting(monster, thrower, false);
-                MethodHandler.alertOthersZombiePiglins((ZombifiedPiglinEntity)monster);
+                MethodHandler.alertOthersZombiePiglins((ZombifiedPiglin)monster);
             }
         }
     }
@@ -175,11 +167,11 @@ public class LossEffect extends InstantEffect
 
         private static boolean isCorrectMonster(LivingEntity entity)
         {
-            return entity instanceof PillagerEntity||entity instanceof VindicatorEntity||entity instanceof PiglinBruteEntity||entity instanceof ZombieEntity||entity instanceof AbstractSkeletonEntity;
+            return entity instanceof Pillager||entity instanceof Vindicator||entity instanceof PiglinBrute||entity instanceof Zombie||entity instanceof AbstractSkeleton;
         }
 
         @Nullable
-        private static <E extends LivingEntity> Inventory obtainInv(Class<? super E> classToAccess, E instance)
+        private static <E extends LivingEntity> SimpleContainer obtainInv(Class<? super E> classToAccess, E instance)
         {
             try
             {
@@ -193,11 +185,11 @@ public class LossEffect extends InstantEffect
         }
 
         @Nullable
-        private static List<ItemStack> obtainInvItems(Inventory inventory)
+        private static List<ItemStack> obtainInvItems(SimpleContainer inventory)
         {
             try
             {
-                return ObfuscationReflectionHelper.getPrivateValue(Inventory.class, inventory, "items");
+                return ObfuscationReflectionHelper.getPrivateValue(SimpleContainer.class, inventory, "items");
             }
             catch(UnableToAccessFieldException exc)
             {
@@ -223,14 +215,14 @@ public class LossEffect extends InstantEffect
 
         private static void findItemAndSetEmpty(ItemStack item, LivingEntity entity)
         {
-            Stream.of(EquipmentSlotType.values()).filter(t->item==entity.getItemBySlot(t)).findFirst().ifPresent(t->entity.setItemSlot(t, ItemStack.EMPTY));
+            Stream.of(EquipmentSlot.values()).filter(t->item==entity.getItemBySlot(t)).findFirst().ifPresent(t->entity.setItemSlot(t, ItemStack.EMPTY));
         }
 
-        private static <E extends IEquipable> void unequipSaddle(Class<E> classToAccess, E entity)
+        private static <E extends Saddleable> void unequipSaddle(Class<E> classToAccess, E entity)
         {
             try
             {
-                ObfuscationReflectionHelper.<BoostHelper, E>getPrivateValue(classToAccess, entity, "steering").setSaddle(false);
+                ObfuscationReflectionHelper.<ItemBasedSteering, E>getPrivateValue(classToAccess, entity, "steering").setSaddle(false);
             }
             catch(UnableToAccessFieldException exc)
             {
@@ -243,17 +235,17 @@ public class LossEffect extends InstantEffect
             entity.spawnAtLocation(item).setPickUpDelay(MethodHandler.PICKUP_DELAY);
         }
 
-        private static void makeVillagerRunAway(VillagerEntity villager, LivingEntity avoidEntity)
+        private static void makeVillagerRunAway(Villager villager, LivingEntity avoidEntity)
         {
             villager.getBrain().setActiveActivityIfPossible(Activity.PANIC);
             villager.getBrain().setMemory(MemoryModuleType.HURT_BY_ENTITY, avoidEntity);
         }
 
-        private static void alertOthersZombiePiglins(ZombifiedPiglinEntity zombiePiglin)
+        private static void alertOthersZombiePiglins(ZombifiedPiglin zombiePiglin)
         {
             try
             {
-                ObfuscationReflectionHelper.findMethod(ZombifiedPiglinEntity.class, "alertOthers").invoke(zombiePiglin);
+                ObfuscationReflectionHelper.findMethod(ZombifiedPiglin.class, "alertOthers").invoke(zombiePiglin);
             }
             catch(ReflectiveOperationException exc)
             {
@@ -261,21 +253,19 @@ public class LossEffect extends InstantEffect
             }
         }
 
-        private static void performTargeting(MobEntity performer, Entity target, boolean forVillager)
+        private static void performTargeting(Mob performer, Entity target, boolean forVillager)
         {
-            if(target instanceof PlayerEntity)
+            if(target instanceof Player playerTarget)
             {
-                PlayerEntity playerTarget=(PlayerEntity)target;
                 if(forVillager)
                 {
                     performer.setLastHurtByMob(playerTarget);
                     performer.setLastHurtByPlayer(playerTarget);
                 }
-                else if(!playerTarget.abilities.instabuild) performer.setTarget(playerTarget);
+                else if(!playerTarget.getAbilities().instabuild) performer.setTarget(playerTarget);
             }
-            else if(target instanceof LivingEntity)
+            else if(target instanceof LivingEntity livingTarget)
             {
-                LivingEntity livingTarget=(LivingEntity)target;
                 if(forVillager) performer.setLastHurtByMob(livingTarget);
                 else performer.setTarget(livingTarget);
             }

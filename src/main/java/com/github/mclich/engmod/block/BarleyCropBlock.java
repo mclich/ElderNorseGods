@@ -1,23 +1,23 @@
 package com.github.mclich.engmod.block;
 
 import com.github.mclich.engmod.register.ENGItems;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
-public class BarleyCropBlock extends CropsBlock
+public class BarleyCropBlock extends CropBlock
 {
 	private static final IntegerProperty AGE=BlockStateProperties.AGE_3;
 	private static final VoxelShape[] SHAPES=new VoxelShape[]{Block.box(0.0D, 0.0D, 0.0D, 16.0D, 3.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 5.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D)};
@@ -42,15 +42,15 @@ public class BarleyCropBlock extends CropsBlock
 	}
 	
 	@Override
-	protected IItemProvider getBaseSeedId()
+	protected ItemLike getBaseSeedId()
 	{
 		return ENGItems.BARLEY_SEEDS.get();
 	}
 	
 	@Override
-	protected int getBonemealAgeIncrease(World world)
+	protected int getBonemealAgeIncrease(Level world)
 	{
-		return MathHelper.nextInt(world.getRandom(), 1, 2);
+		return Mth.nextInt(world.getRandom(), 1, 2);
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class BarleyCropBlock extends CropsBlock
 	}
 	
 	@Override
-	public VoxelShape getShape(BlockState blockState, IBlockReader ibReader, BlockPos blockPos, ISelectionContext context)
+	public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext context)
 	{
 		return BarleyCropBlock.SHAPES[blockState.getValue(this.getAgeProperty())];
 	}

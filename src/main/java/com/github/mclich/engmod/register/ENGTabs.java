@@ -1,16 +1,15 @@
 package com.github.mclich.engmod.register;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.NonNullList;
-import com.github.mclich.engmod.register.ENGItems.EggHelper;
-import net.minecraftforge.fml.RegistryObject;
 
 @SuppressWarnings("unused")
 public abstract class ENGTabs
@@ -19,7 +18,7 @@ public abstract class ENGTabs
 	private static final Comparator<ItemStack> FOOD_COMPARATOR=(is1, is2)->Integer.compare(is2.getItem().getFoodProperties().getNutrition(), is1.getItem().getFoodProperties().getNutrition());
 	private static final int DELAY=3*20;
 	
-	public static final ItemGroup COMBAT=new ItemGroup("engmod.combat")
+	public static final CreativeModeTab COMBAT=new CreativeModeTab("engmod.combat")
 	{
 		@Override
 		public ItemStack makeIcon()
@@ -28,7 +27,7 @@ public abstract class ENGTabs
 		}
 	};
 	
-	public static final ItemGroup TOOLS=new ItemGroup("engmod.tools")
+	public static final CreativeModeTab TOOLS=new CreativeModeTab("engmod.tools")
 	{
 		@Override
 		public ItemStack makeIcon()
@@ -37,32 +36,32 @@ public abstract class ENGTabs
 		}
 		
 		@Override
-		public boolean hasEnchantmentCategory(EnchantmentType type)
+		public boolean hasEnchantmentCategory(EnchantmentCategory category)
 		{
-			return super.hasEnchantmentCategory(type)||type==ENGEnchantments.Types.PICKAXE_ONLY||type==ENGEnchantments.Types.DAMAGING;
+			return super.hasEnchantmentCategory(category)||category==ENGEnchantments.Types.PICKAXE_ONLY||category==ENGEnchantments.Types.DAMAGING;
 		}
 
 		@Override
-		public EnchantmentType[] getEnchantmentCategories()
+		public EnchantmentCategory[] getEnchantmentCategories()
 		{
-			EnchantmentType[] current=super.getEnchantmentCategories();
-			EnchantmentType[] result=new EnchantmentType[current.length+1];
+			EnchantmentCategory[] current=super.getEnchantmentCategories();
+			EnchantmentCategory[] result=new EnchantmentCategory[current.length+1];
 			System.arraycopy(current, 0, result, 0, current.length);
 			result[current.length]=ENGEnchantments.Types.PICKAXE_ONLY;
 			return result;
 		}
 	};
 	
-	public static final ItemGroup MATERIALS=new ItemGroup("engmod.materials")
+	public static final CreativeModeTab MATERIALS=new CreativeModeTab("engmod.materials")
 	{
 		@Override
 		public ItemStack makeIcon()
 		{
-			return new ItemStack(ENGItems.CUSTOM_MATERIAL.get());
+			return new ItemStack(Items.BARRIER);
 		}
 	};
 	
-	public static final ItemGroup BLOCKS=new ItemGroup("engmod.blocks")
+	public static final CreativeModeTab BLOCKS=new CreativeModeTab("engmod.blocks")
 	{
 		private int counter=-1;
 		
@@ -90,7 +89,7 @@ public abstract class ENGTabs
 		}
 	};
 	
-	public static final ItemGroup MISC=new ItemGroup("engmod.misc")
+	public static final CreativeModeTab MISC=new CreativeModeTab("engmod.misc")
 	{
 		private int counter=-1;
 		
@@ -105,13 +104,13 @@ public abstract class ENGTabs
 		{
 			this.counter++;
 			List<Item> tabItems=ENGItems.ITEMS.getEntries().stream().filter(r->r.get().getCreativeTabs().contains(this)).map(RegistryObject::get).collect(Collectors.toList());
-			tabItems.add(EggHelper.VALKYRIE_SPAWN_EGG);
+			tabItems.add(ENGItems.VALKYRIE_SPAWN_EGG.get());
 			if(this.counter>=tabItems.size()*ENGTabs.DELAY) this.counter=0;
 			return ENGTabs.currentIcon(this, tabItems, this.counter);
 		}
 	};
 	
-	public static final ItemGroup FOOD=new ItemGroup("engmod.food")
+	public static final CreativeModeTab FOOD=new CreativeModeTab("engmod.food")
 	{
 		private int counter=-1;
 		
@@ -138,7 +137,7 @@ public abstract class ENGTabs
 		}
 	};
 	
-	private static ItemStack currentIcon(ItemGroup tab, List<Item> tabItems, int counter)
+	private static ItemStack currentIcon(CreativeModeTab tab, List<Item> tabItems, int counter)
 	{
 		for(int i=0; i<tabItems.size(); i++)
 		{

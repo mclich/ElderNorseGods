@@ -4,15 +4,14 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 
 public class StaffParticleType extends ParticleType<StaffParticleData>
 {
 	private static final Codec<StaffParticleData> CODEC=RecordCodecBuilder.create(i->i.group(Codec.INT.fieldOf("color").forGetter(StaffParticleData::getColor)).apply(i, StaffParticleData::new));
-	@SuppressWarnings("deprecation")
-	private static final IParticleData.IDeserializer<StaffParticleData> DESERIALIZER=new IParticleData.IDeserializer<StaffParticleData>()
+	private static final @SuppressWarnings("deprecation") ParticleOptions.Deserializer<StaffParticleData> DESERIALIZER=new ParticleOptions.Deserializer<>()
 	{
 		public StaffParticleData fromCommand(ParticleType<StaffParticleData> type, StringReader reader) throws CommandSyntaxException
 		{
@@ -28,7 +27,7 @@ public class StaffParticleType extends ParticleType<StaffParticleData>
 			return new StaffParticleData(((r&255)<<16)|((g&255)<<8)|(b&255));
 		}
 
-		public StaffParticleData fromNetwork(ParticleType<StaffParticleData> type, PacketBuffer buffer)
+		public StaffParticleData fromNetwork(ParticleType<StaffParticleData> type, FriendlyByteBuf buffer)
 		{
 			return new StaffParticleData(buffer.readInt());
 		}

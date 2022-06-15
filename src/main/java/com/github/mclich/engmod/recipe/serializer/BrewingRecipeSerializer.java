@@ -3,74 +3,97 @@ package com.github.mclich.engmod.recipe.serializer;
 import com.github.mclich.engmod.recipe.BrewingRecipe;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class BrewingRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<BrewingRecipe>
+public class BrewingRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<BrewingRecipe>
 {
-	private final Supplier<BrewingRecipe> supplier;
+	private final BrewingSupplier<BrewingRecipe> supplier;
 	private final float defaultExperience;
-	private final int defaultBrewingTime;
+	private final int defaultBrewTime;
 	
-	public BrewingRecipeSerializer(Supplier<BrewingRecipe> supplier, float defaultExperience, int defaultBrewingTime)
+	public BrewingRecipeSerializer(BrewingSupplier<BrewingRecipe> brewingSupplier, float defaultExperience, int defaultBrewTime)
 	{
-		this.supplier=supplier;
+		this.supplier=brewingSupplier;
 		this.defaultExperience=defaultExperience;
-		this.defaultBrewingTime=defaultBrewingTime;
+		this.defaultBrewTime=defaultBrewTime;
 	}
 
-	@SuppressWarnings("unused")
-	public BrewingRecipeSerializer(Supplier<BrewingRecipe> supplier)
+	public BrewingRecipeSerializer(BrewingSupplier<BrewingRecipe> brewingSupplier)
 	{
-		this(supplier, 0.7F, 200);
+		this(brewingSupplier, 0.7F, 200);
 	}
 	
 	public BrewingRecipeSerializer()
 	{
-		this(BrewingRecipe::new, 0.7F, 200);
+		this(BrewingRecipe::new);
 	}
-	
-	@Override
-	@SuppressWarnings("deprecation")
-	public BrewingRecipe fromJson(ResourceLocation location, JsonObject jsonFile)
+
+	private static void requiresValidJson(JsonObject json)
 	{
-		Ingredient bottle=Ingredient.fromJson(JSONUtils.isArrayNode(jsonFile, "bottle")?JSONUtils.getAsJsonArray(jsonFile, "bottle"):JSONUtils.getAsJsonObject(jsonFile, "bottle"));
-		Ingredient ingredient=Ingredient.fromJson(JSONUtils.isArrayNode(jsonFile, "ingredient")?JSONUtils.getAsJsonArray(jsonFile, "ingredient"):JSONUtils.getAsJsonObject(jsonFile, "ingredient"));
-		if(!jsonFile.has("result")) throw new JsonSyntaxException("Missing result, expected to find a string or object");
-		@SuppressWarnings("all") ItemStack itemstack=ItemStack.EMPTY;
-		if(jsonFile.get("result").isJsonObject()) itemstack=ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(jsonFile, "result"));
-		else
-		{
-			String result=JSONUtils.getAsString(jsonFile, "result");
-			ResourceLocation rl=new ResourceLocation(result);
-			itemstack=new ItemStack(Registry.ITEM.getOptional(rl).orElseThrow(()->new IllegalStateException("Item: "+result+" does not exist")));
-		}
-		float xp=JSONUtils.getAsFloat(jsonFile, "experience", this.defaultExperience);
-		int brewTime=JSONUtils.getAsInt(jsonFile, "brew_time", this.defaultBrewingTime);
-		return this.supplier.create(location, itemstack, bottle, ingredient, xp, brewTime);
+		if(!json.has("bottle")) throw new JsonSyntaxException("Missing 'bottle', expected to find an object");
+		if(!json.has("ingredient")) throw new JsonSyntaxException("Missing 'ingredient', expected to find an object");
+		if(!json.has("result")) throw new JsonSyntaxException("Missing 'result', expected to find a string");
+	}
+
+	private static Ingredient getIngredientFromJson(JsonObject json, String memberName)
+	{
+		return Ingredient.fromJson(GsonHelper.isArrayNode(json, memberName)?GsonHelper.getAsJsonArray(json, memberName):GsonHelper.getAsJsonObject(json, memberName));
+	}
+
+	private static ItemStack getResultItemFromJson(JsonObject json)
+	{
+		String location=GsonHelper.getAsString(json, "result");
+		Item resultItem=ForgeRegistries.ITEMS.getValue(new ResourceLocation(location));
+		if(resultItem==null) throw new IllegalStateException("Item '"+location+"' does not exist");
+		return new ItemStack(resultItem);
 	}
 
 	@Override
-	public BrewingRecipe fromNetwork(ResourceLocation location, PacketBuffer buffer)
+	public BrewingRecipe fromJson(ResourceLocation location, JsonObject json)
 	{
-		return null;
+		BrewingRecipeSerializer.requiresValidJson(json);
+		Ingredient bottle=BrewingRecipeSerializer.getIngredientFromJson(json, "bottle");
+		Ingredient ingredient=BrewingRecipeSerializer.getIngredientFromJson(json, "ingredient");
+		ItemStack result=BrewingRecipeSerializer.getResultItemFromJson(json);
+		float experience=GsonHelper.getAsFloat(json, "experience", this.defaultExperience);
+		int brewTime=GsonHelper.getAsInt(json, "brew_time", this.defaultBrewTime);
+		return this.supplier.create(location, bottle, ingredient, result, experience, brewTime);
 	}
 
 	@Override
-	public void toNetwork(PacketBuffer buffer, BrewingRecipe recipe)
+	public BrewingRecipe fromNetwork(ResourceLocation location, FriendlyByteBuf buffer)
 	{
-		
+		return this.supplier.create
+		(
+			location,
+			Ingredient.fromNetwork(buffer),
+			Ingredient.fromNetwork(buffer),
+			buffer.readItem(),
+			buffer.readFloat(),
+			buffer.readInt()
+		);
+	}
+
+	@Override
+	public void toNetwork(FriendlyByteBuf buffer, BrewingRecipe recipe)
+	{
+		recipe.getBottleIngredient().toNetwork(buffer);
+		recipe.getCookIngredient().toNetwork(buffer);
+		buffer.writeItem(recipe.getResultItem());
+		buffer.writeFloat(recipe.getExperience());
+		buffer.writeInt(recipe.getBrewTime());
 	}
 	
-	private interface Supplier<R extends BrewingRecipe>
+	private interface BrewingSupplier<R extends BrewingRecipe>
 	{
-		R create(ResourceLocation location, ItemStack result, Ingredient bottle, Ingredient ingredient, float experience, int brewingTime);
+		R create(ResourceLocation location, Ingredient bottle, Ingredient ingredient, ItemStack result, float experience, int brewingTime);
 	}
 }

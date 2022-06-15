@@ -1,11 +1,11 @@
 package com.github.mclich.engmod.item;
 
 import com.github.mclich.engmod.register.ENGTabs;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.Item;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.Items;
 
 public class CustomSwordItem extends SwordItem
 {
@@ -15,7 +15,7 @@ public class CustomSwordItem extends SwordItem
 	{
 		super
 		(
-			new IItemTier()
+			new Tier()
 			{
 				@Override
 				public int getUses() {return 3000;}

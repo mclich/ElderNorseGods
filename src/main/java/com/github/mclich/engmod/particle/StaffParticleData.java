@@ -2,12 +2,12 @@ package com.github.mclich.engmod.particle;
 
 import java.util.Locale;
 import com.github.mclich.engmod.register.ENGParticles;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class StaffParticleData implements IParticleData
+public class StaffParticleData implements ParticleOptions
 {
 	private final int color;
 	
@@ -17,7 +17,7 @@ public class StaffParticleData implements IParticleData
 	}
 	
 	@Override
-	public void writeToNetwork(PacketBuffer buffer)
+	public void writeToNetwork(FriendlyByteBuf buffer)
 	{
 		buffer.writeInt(this.color);
 	}

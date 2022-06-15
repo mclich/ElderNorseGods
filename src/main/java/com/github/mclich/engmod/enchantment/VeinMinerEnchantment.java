@@ -2,14 +2,14 @@ package com.github.mclich.engmod.enchantment;
 
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.register.ENGEnchantments;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.Tags.Blocks;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,7 +22,7 @@ public class VeinMinerEnchantment extends Enchantment
 	
 	public VeinMinerEnchantment()
 	{
-		super(Rarity.RARE, ENGEnchantments.Types.PICKAXE_ONLY, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(Rarity.RARE, ENGEnchantments.Types.PICKAXE_ONLY, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
 	}
 	
 	@Override
@@ -52,7 +52,7 @@ public class VeinMinerEnchantment extends Enchantment
 	@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.FORGE)
 	private static abstract class EventHandler
 	{
-		private static void mineVein(ServerPlayerEntity player, World world, BlockPos startPos, BlockState blockState, Block ore)
+		private static void mineVein(ServerPlayer player, Level world, BlockPos startPos, BlockState blockState, Block ore)
 		{
 			if(player.gameMode.isSurvival())
 			{
@@ -72,7 +72,7 @@ public class VeinMinerEnchantment extends Enchantment
 		{
 			if(!event.getWorld().isClientSide()&&EnchantmentHelper.getItemEnchantmentLevel(ENGEnchantments.VEIN_MINER.get(), event.getPlayer().getMainHandItem())>0&&event.getState().is(Blocks.ORES))
 			{
-				EventHandler.mineVein((ServerPlayerEntity)event.getPlayer(), (World)event.getWorld(), event.getPos(), event.getState(), event.getState().getBlock());
+				EventHandler.mineVein((ServerPlayer)event.getPlayer(), (Level)event.getWorld(), event.getPos(), event.getState(), event.getState().getBlock());
 			}
 		}
 	}

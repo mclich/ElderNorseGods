@@ -2,11 +2,11 @@ package com.github.mclich.engmod.world.gen;
 
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.register.ENGEntities;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.Items;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -21,18 +21,17 @@ public abstract class EntitySpawn
 	public static void registerSpawns(BiomeLoadingEvent event)
 	{
 		//event.getSpawns().getSpawner(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(ENGModEntities.VALKYRIE_ENTITY.get(), 200, 1, 4));
-		if(event.getCategory()==Biome.Category.PLAINS)
+		if(event.getCategory()==Biome.BiomeCategory.PLAINS)
 		{
-			event.getSpawns().addSpawn(EntityClassification.MONSTER, new MobSpawnInfo.Spawners(ENGEntities.VALKYRIE, 100, 1, 4));
+			event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(ENGEntities.VALKYRIE.get(), 100, 1, 4));
 		}
 	}
 	
 	@SubscribeEvent
 	public static void disableItemGravity(EntityJoinWorldEvent event)
 	{
-		if(event.getEntity() instanceof ItemEntity)
+		if(event.getEntity() instanceof ItemEntity item)
 		{
-			ItemEntity item=(ItemEntity)event.getEntity();
 			if(item.getItem().getItem()==Items.APPLE)
 			{
 				item.setNoGravity(true);

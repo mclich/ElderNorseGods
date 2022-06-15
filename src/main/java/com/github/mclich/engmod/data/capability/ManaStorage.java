@@ -1,15 +1,15 @@
-package com.github.mclich.engmod.data.handler;
+package com.github.mclich.engmod.data.capability;
 
 import com.github.mclich.engmod.network.NetworkHandler;
 import com.github.mclich.engmod.network.packet.ManaDataPacket;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
-public class ManaHandler implements IManaHandler
+public class ManaStorage implements IManaStorage
 {
 	private float mana;
 	private boolean active;
 	
-	public ManaHandler()
+	public ManaStorage()
 	{
 		this.mana=0F;
 		this.active=false;
@@ -40,7 +40,7 @@ public class ManaHandler implements IManaHandler
 	}
 
 	@Override
-	public void update(ServerPlayerEntity player)
+	public void update(ServerPlayer player)
 	{
 		NetworkHandler.sendToPlayer(player, new ManaDataPacket(this.getMana(), this.getStatus()));
 	}

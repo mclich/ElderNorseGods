@@ -1,9 +1,0 @@
-{
-	"variants":
-	{
-		"":
-		{
-			"model": "engmod:block/custom_block"
-		}
-	}
-}

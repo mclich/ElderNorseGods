@@ -4,23 +4,19 @@ import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.particle.StaffParticleData;
 import com.github.mclich.engmod.register.ENGTabs;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.IVanishable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.UseAction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-public abstract class StaffItem extends Item implements IVanishable
+public abstract class StaffItem extends Item implements Vanishable
 {
 	protected int particleColor;
 	
@@ -30,27 +26,27 @@ public abstract class StaffItem extends Item implements IVanishable
 		this.particleColor=particleColor;
 	}
 	
-	protected static boolean hasPlayerShieldEquipped(PlayerEntity player, Hand useItemHand)
+	protected static boolean hasPlayerShieldEquipped(Player player, InteractionHand hand)
 	{
-		return player.getItemInHand(useItemHand==Hand.MAIN_HAND?Hand.OFF_HAND:Hand.MAIN_HAND).isShield(player);
+		return player.getItemInHand(hand==InteractionHand.MAIN_HAND?InteractionHand.OFF_HAND:InteractionHand.MAIN_HAND).getItem()==Items.SHIELD;
 	}
 	
 	@Override
 	public abstract boolean isValidRepairItem(ItemStack staffStack, ItemStack repairStack);
 	
-	public abstract void applyEffect(World world, LivingEntity entity, ItemStack itemStack);
+	public abstract void applyEffect(Level world, LivingEntity entity, ItemStack itemStack);
 	
 	@Override
-	public UseAction getUseAnimation(ItemStack itemStack)
+	public UseAnim getUseAnimation(ItemStack itemStack)
 	{
-		return UseAction.BOW;
+		return UseAnim.BOW;
 	}
-	
+
 	@Override
-	public void onUseTick(World world, LivingEntity entity, ItemStack itemStack, int ticks)
+	public void onUseTick(Level world, LivingEntity entity, ItemStack itemStack, int ticks)
 	{
 		if(ticks%2==0) entity.playSound(SoundEvents.PARROT_IMITATE_VEX, 0.7F, world.random.nextFloat()*0.7F+0.3F);
-		if(!world.isClientSide()) ((ServerWorld)world).sendParticles(new StaffParticleData(this.particleColor), entity.getX(), entity.getY(), entity.getZ(), 1, 0D, 0D, 0D, 1D);
+		if(!world.isClientSide()) ((ServerLevel)world).sendParticles(new StaffParticleData(this.particleColor), entity.getX(), entity.getY(), entity.getZ(), 1, 0D, 0D, 0D, 1D);
 		//SoundEvents.EVOKER_PREPARE_SUMMON
 	}
 	
@@ -60,7 +56,7 @@ public abstract class StaffItem extends Item implements IVanishable
 		@SubscribeEvent
 		public static void renderFPV(RenderHandEvent event)
 		{
-			PlayerEntity player=Minecraft.getInstance().player;
+			Player player=Minecraft.getInstance().player;
 			if(player.isUsingItem()&&player.getUseItem().getItem() instanceof StaffItem&&player.getUsedItemHand()!=event.getHand())
 			{
 				event.setCanceled(true);

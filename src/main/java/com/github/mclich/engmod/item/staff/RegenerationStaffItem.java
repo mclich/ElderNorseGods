@@ -1,9 +1,9 @@
 package com.github.mclich.engmod.item.staff;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 
 public class RegenerationStaffItem extends PermanentStaffItem
 {
@@ -21,7 +21,7 @@ public class RegenerationStaffItem extends PermanentStaffItem
 	}
 	
 	@Override
-	public void applyEffect(World world, LivingEntity entity, ItemStack itemStack)
+	public void applyEffect(Level world, LivingEntity entity, ItemStack itemStack)
 	{
 		entity.heal(1F);
 	}

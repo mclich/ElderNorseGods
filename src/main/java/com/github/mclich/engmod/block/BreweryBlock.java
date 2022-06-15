@@ -1,40 +1,42 @@
 package com.github.mclich.engmod.block;
 
-import java.util.Random;
-import com.github.mclich.engmod.entity.tile.BreweryTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
-import net.minecraftforge.fml.network.NetworkHooks;
-
+import com.github.mclich.engmod.entity.block.BreweryBlockEntity;
+import com.github.mclich.engmod.register.ENGBlockEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import javax.annotation.Nullable;
+import java.util.Random;
 
-public class BreweryBlock extends HorizontalBlock
+public class BreweryBlock extends HorizontalDirectionalBlock implements EntityBlock
 {
 	public static final String ID="brewery";
 	public static final BooleanProperty HAS_FUEL=BooleanProperty.create("has_fuel");
@@ -45,22 +47,23 @@ public class BreweryBlock extends HorizontalBlock
 	
 	public BreweryBlock()
 	{
-		super(Block.Properties.of(Material.STONE).strength(3.5F).harvestLevel(0).harvestTool(ToolType.PICKAXE).requiresCorrectToolForDrops().lightLevel(bs->bs.getValue(BreweryBlock.HAS_FUEL)?bs.getValue(BreweryBlock.LIT)?13:6:0).sound(SoundType.STONE));
+		super(Block.Properties.of(Material.STONE).strength(3.5F).lightLevel(bs->bs.getValue(BreweryBlock.HAS_FUEL)?bs.getValue(BreweryBlock.LIT)?13:6:0).sound(SoundType.STONE));
 		this.registerDefaultState(this.stateDefinition.any().setValue(BreweryBlock.FACING, Direction.NORTH).setValue(BreweryBlock.HAS_FUEL, false).setValue(BreweryBlock.LIT, false));
-	}
-	
-	@Override
-	public boolean hasTileEntity(BlockState state)
-	{
-		return true;
 	}
 
 	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world)
+	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState)
 	{
-		return new BreweryTileEntity();
+		return new BreweryBlockEntity(blockPos, blockState);
 	}
-	
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState blockState, BlockEntityType<T> blockEntityType)
+	{
+		return blockEntityType==ENGBlockEntities.BREWERY_ENTITY.get()?BreweryBlockEntity::tick:null;
+	}
+
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
@@ -68,7 +71,7 @@ public class BreweryBlock extends HorizontalBlock
 	}
 	
 	@Override
-	public BlockState getStateForPlacement(@Nullable BlockItemUseContext context)
+	public BlockState getStateForPlacement(@Nullable BlockPlaceContext context)
 	{
 		if(context==null) return this.defaultBlockState();
 		return this.defaultBlockState().setValue(BreweryBlock.FACING, context.getHorizontalDirection().getOpposite());
@@ -76,13 +79,13 @@ public class BreweryBlock extends HorizontalBlock
 	
 	@Override
 	@SuppressWarnings("deprecation")
-	public VoxelShape getShape(BlockState blockState, IBlockReader ibReader, BlockPos blockPos, ISelectionContext context)
+	public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext context)
 	{
-		return VoxelShapes.or(BreweryBlock.SHAPE_TOP, BreweryBlock.SHAPE_BOX);
+		return Shapes.or(BreweryBlock.SHAPE_TOP, BreweryBlock.SHAPE_BOX);
 	}
 	
 	@Override
-	public void animateTick(BlockState blockState, World world, BlockPos blockPos, Random random)
+	public void animateTick(BlockState blockState, Level world, BlockPos blockPos, Random random)
 	{
 		if(blockState.getValue(BreweryBlock.HAS_FUEL))
 		{
@@ -103,7 +106,7 @@ public class BreweryBlock extends HorizontalBlock
 			}
 			if(blockState.getValue(BreweryBlock.LIT))
 			{
-				if(random.nextDouble()<0.2D) world.playLocalSound(d0, d1, d2, SoundEvents.SMOKER_SMOKE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
+				if(random.nextDouble()<0.2D) world.playLocalSound(d0, d1, d2, SoundEvents.SMOKER_SMOKE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
 				world.addParticle(ParticleTypes.SMOKE, d0, d1+1D, d2, 0D, 0D, 0D);
 			}
 		}
@@ -111,35 +114,34 @@ public class BreweryBlock extends HorizontalBlock
 	
 	@Override
 	@SuppressWarnings("deprecation")
-	public void onRemove(BlockState blockState1, World world, BlockPos blockPos, BlockState blockState2, boolean flag)
+	public void onRemove(BlockState oldBlockState, Level world, BlockPos blockPos, BlockState newBlockState, boolean isMoving)
 	{
-		if(!blockState1.is(blockState2.getBlock()))
+		if(!oldBlockState.is(newBlockState.getBlock()))
 		{
-			TileEntity tileEntity=world.getBlockEntity(blockPos);
-			if(tileEntity instanceof BreweryTileEntity)
+			BlockEntity blockEntity=world.getBlockEntity(blockPos);
+			if(blockEntity instanceof BreweryBlockEntity breweryEntity)
 			{
-				BreweryTileEntity bTileEntity=(BreweryTileEntity)tileEntity;
-				InventoryHelper.dropContents(world, blockPos, bTileEntity);
-				bTileEntity.awardExperience(world, Vector3d.atCenterOf(blockPos));
+				Containers.dropContents(world, blockPos, breweryEntity);
+				breweryEntity.awardExperience(world, Vec3.atCenterOf(blockPos));
 				world.updateNeighbourForOutputSignal(blockPos, this);
 			}
-			super.onRemove(blockState1, world, blockPos, blockState2, flag);
+			super.onRemove(oldBlockState, world, blockPos, newBlockState, isMoving);
 		}
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public ActionResultType use(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult blockRayTrace)
+	public InteractionResult use(BlockState blockState, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult)
 	{
-		if(world.isClientSide()) return ActionResultType.SUCCESS;
+		if(world.isClientSide()) return InteractionResult.SUCCESS;
 		else
 		{
-			TileEntity tileEntity=world.getBlockEntity(blockPos);
-			if(tileEntity instanceof BreweryTileEntity)
+			BlockEntity blockEntity=world.getBlockEntity(blockPos);
+			if(blockEntity instanceof BreweryBlockEntity)
 			{
-				NetworkHooks.openGui((ServerPlayerEntity)player, (BreweryTileEntity)tileEntity, tileEntity.getBlockPos());
+				NetworkHooks.openGui((ServerPlayer)player, (BreweryBlockEntity)blockEntity, blockEntity.getBlockPos());
 			}
-			return ActionResultType.CONSUME;
+			return InteractionResult.CONSUME;
 		}
 	}
 }

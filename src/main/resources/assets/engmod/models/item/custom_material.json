@@ -1,7 +1,0 @@
-{
-	"parent": "minecraft:item/generated",
-	"textures": 
-	{
-		"layer0": "engmod:item/custom_material"
-	}
-}

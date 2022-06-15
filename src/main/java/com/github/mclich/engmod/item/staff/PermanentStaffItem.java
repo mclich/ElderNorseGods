@@ -1,21 +1,22 @@
 package com.github.mclich.engmod.item.staff;
 
 import java.util.List;
-import com.github.mclich.engmod.data.capability.ManaCapability;
-import com.github.mclich.engmod.data.handler.IManaHandler;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.ItemStack.TooltipDisplayFlags;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+
+import com.github.mclich.engmod.data.capability.IManaStorage;
+import com.github.mclich.engmod.register.ENGCapabilities;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ItemStack.TooltipPart;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 
 public abstract class PermanentStaffItem extends StaffItem
 {
@@ -36,60 +37,59 @@ public abstract class PermanentStaffItem extends StaffItem
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> textField, ITooltipFlag advanced)
+	public void appendHoverText(ItemStack itemStack, Level world, List<Component> textField, TooltipFlag isAdvanced)
 	{
 		if(itemStack.isEnchanted())
 		{
-			itemStack.hideTooltipPart(TooltipDisplayFlags.ENCHANTMENTS);
+			itemStack.hideTooltipPart(TooltipPart.ENCHANTMENTS);
 			ItemStack.appendEnchantmentNames(textField, itemStack.getEnchantmentTags());
 		}
-		textField.add(StringTextComponent.EMPTY);
-		textField.add(new TranslationTextComponent("staff.engmod.used").withStyle(TextFormatting.GRAY));
-		textField.add(new TranslationTextComponent("staff.engmod.perm_mana", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.manaUseDelay)).withStyle(TextFormatting.DARK_GREEN));
-		textField.add(new TranslationTextComponent("staff.engmod.perm_effect_heal", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.effectUseDelay)).withStyle(TextFormatting.DARK_GREEN));
+		textField.add(TextComponent.EMPTY);
+		textField.add(new TranslatableComponent("staff.engmod.used").withStyle(ChatFormatting.GRAY));
+		textField.add(new TranslatableComponent("staff.engmod.perm_mana", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.manaUseDelay)).withStyle(ChatFormatting.DARK_GREEN));
+		textField.add(new TranslatableComponent("staff.engmod.perm_effect_heal", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.effectUseDelay)).withStyle(ChatFormatting.DARK_GREEN));
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
 	{
 		ItemStack handItem=player.getItemInHand(hand);
-		if(StaffItem.hasPlayerShieldEquipped(player, hand)) return ActionResult.fail(handItem);
-		IManaHandler mana=player.getCapability(ManaCapability.CAP_INSTANCE).orElse(null);
-		if(player.abilities.instabuild)
+		if(StaffItem.hasPlayerShieldEquipped(player, hand)) return InteractionResultHolder.fail(handItem);
+		IManaStorage mana=player.getCapability(ENGCapabilities.MANA).orElse(null);
+		if(player.getAbilities().instabuild)
 		{
 			player.startUsingItem(hand);
-			return ActionResult.consume(handItem);
+			return InteractionResultHolder.consume(handItem);
 		}
 		else if(mana!=null&&mana.getStatus())
 		{
 			if(mana.getMana()>0F)
 			{
 				player.startUsingItem(hand);
-				return ActionResult.consume(handItem);
+				return InteractionResultHolder.consume(handItem);
 			}
 			else
 			{
-				player.displayClientMessage(new TranslationTextComponent("message.engmod.no_mana_points"), true);
-				return ActionResult.fail(handItem);
+				player.displayClientMessage(new TranslatableComponent("message.engmod.no_mana_points"), true);
+				return InteractionResultHolder.fail(handItem);
 			}
 		}
 		else
 		{
-			player.displayClientMessage(new TranslationTextComponent("message.engmod.no_mana_access"), true);
-			return ActionResult.fail(handItem);
+			player.displayClientMessage(new TranslatableComponent("message.engmod.no_mana_access"), true);
+			return InteractionResultHolder.fail(handItem);
 		}
 	}
 	
 	@Override
-	public void onUseTick(World world, LivingEntity entity, ItemStack itemStack, int ticks)
+	public void onUseTick(Level world, LivingEntity entity, ItemStack itemStack, int ticks)
 	{
 		super.onUseTick(world, entity, itemStack, ticks);
-		if(entity instanceof PlayerEntity)
+		if(entity instanceof Player player)
 		{
-			PlayerEntity player=(PlayerEntity)entity;
 			int power=this.getUseDuration(itemStack)-ticks;
-			IManaHandler mana=player.getCapability(ManaCapability.CAP_INSTANCE).orElse(null);
-			if(mana!=null&&mana.getMana()>0F&&!player.abilities.instabuild)
+			IManaStorage mana=player.getCapability(ENGCapabilities.MANA).orElse(null);
+			if(mana!=null&&mana.getMana()>0F&&!player.getAbilities().instabuild)
 			{
 				if(power==0) power=1;
 				if(power%this.manaUseDelay==0) mana.setMana(mana.getMana()>1F?mana.getMana()-1F:0F);
