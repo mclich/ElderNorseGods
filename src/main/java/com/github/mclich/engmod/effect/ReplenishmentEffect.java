@@ -1,30 +1,30 @@
 package com.github.mclich.engmod.effect;
 
-import com.github.mclich.engmod.data.capability.ManaCapability;
+import com.github.mclich.engmod.register.ENGCapabilities;
 import com.github.mclich.engmod.register.ENGEffects;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectCategory;
 
-public class ReplenishmentEffect extends Effect
+public class ReplenishmentEffect extends MobEffect
 {
 	public static final String ID="replenishment";
 
 	public ReplenishmentEffect()
 	{
-		super(EffectType.BENEFICIAL, 0x007DFB);
+		super(MobEffectCategory.BENEFICIAL, 0x007DFB);
 	}
 	
-	public static EffectInstance getInstance()
+	public static MobEffectInstance getInstance()
 	{
-		return new EffectInstance(ENGEffects.REPLENISHMENT.get(), 400, 0);
+		return new MobEffectInstance(ENGEffects.REPLENISHMENT.get(), 400, 0);
 	}
 	
-	public static EffectInstance getActivationInstance()
+	public static MobEffectInstance getActivationInstance()
 	{
-		return new EffectInstance(ENGEffects.REPLENISHMENT.get(), 100, 1);
+		return new MobEffectInstance(ENGEffects.REPLENISHMENT.get(), 100, 1);
 	}
 	
 	@Override
@@ -36,13 +36,13 @@ public class ReplenishmentEffect extends Effect
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier)
 	{
-		if(!entity.getCommandSenderWorld().isClientSide()&&entity instanceof ServerPlayerEntity)
+		if(!entity.getCommandSenderWorld().isClientSide()&&entity instanceof ServerPlayer)
 		{
-			entity.getCapability(ManaCapability.CAP_INSTANCE).ifPresent
+			entity.getCapability(ENGCapabilities.MANA).ifPresent
 			(
 				mana->
 				{
-					if(mana.getStatus()) mana.setAndUpdateMana((ServerPlayerEntity)entity, mana.getMana()+1);
+					if(mana.getStatus()) mana.setAndUpdateMana((ServerPlayer)entity, mana.getMana()+1);
 				}
 			);
 		}

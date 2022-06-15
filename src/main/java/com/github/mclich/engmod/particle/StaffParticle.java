@@ -1,20 +1,20 @@
 package com.github.mclich.engmod.particle;
 
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.multiplayer.ClientLevel;
 
-public class StaffParticle extends SpriteTexturedParticle
+public class StaffParticle extends TextureSheetParticle
 {
 	public static final String ID="staff_particle";
 	
-	private final IAnimatedSprite sprites;
+	private final SpriteSet sprites;
 	private int angle;
 	
-	public StaffParticle(ClientWorld world, IAnimatedSprite sprites, int color, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+	public StaffParticle(ClientLevel world, SpriteSet sprites, int color, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 	{
 		super(world, x, y, z, xSpeed, ySpeed, zSpeed);
 		this.angle=0;
@@ -51,22 +51,22 @@ public class StaffParticle extends SpriteTexturedParticle
 	}
 	
 	@Override
-	public IParticleRenderType getRenderType()
+	public ParticleRenderType getRenderType()
 	{
-		return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+		return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
 	}
 	
-	public static class Factory implements IParticleFactory<StaffParticleData>
+	public static class Factory implements ParticleProvider<StaffParticleData>
 	{
-		private final IAnimatedSprite sprite;
+		private final SpriteSet sprite;
 		
-		public Factory(IAnimatedSprite sprite)
+		public Factory(SpriteSet sprite)
 		{
 			this.sprite=sprite;
 		}
 
 		@Override
-		public Particle createParticle(StaffParticleData data, ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle createParticle(StaffParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new StaffParticle(world, this.sprite, data.getColor(), x, y, z, xSpeed, ySpeed, zSpeed);
 		}

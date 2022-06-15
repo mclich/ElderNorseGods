@@ -1,51 +1,51 @@
 package com.github.mclich.engmod.network.packet;
 
-import java.util.UUID;
-import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class SpawnParticlesPacket
 {
-	private IParticleData particle;
+	private ParticleOptions particle;
 	private UUID player;
-	private int lifetime;
+	private int lifeTime;
 	
-	public SpawnParticlesPacket(IParticleData particle, UUID player, int lifetime)
+	public SpawnParticlesPacket(ParticleOptions particle, UUID player, int lifeTime)
 	{
 		this.particle=particle;
 		this.player=player;
-		this.lifetime=lifetime;
+		this.lifeTime=lifeTime;
 	}
 	
-	public static void encode(SpawnParticlesPacket packet, PacketBuffer buffer)
+	public static void encode(SpawnParticlesPacket packet, FriendlyByteBuf buffer)
 	{
 		buffer.writeRegistryId(packet.particle.getType());
 		buffer.writeUUID(packet.player);
-		buffer.writeInt(packet.lifetime);
+		buffer.writeInt(packet.lifeTime);
 	}
 	
-	public static SpawnParticlesPacket decode(PacketBuffer buffer)
+	public static SpawnParticlesPacket decode(FriendlyByteBuf buffer)
 	{
 		return new SpawnParticlesPacket(buffer.readRegistryId(), buffer.readUUID(), buffer.readInt());
 	}
 	
-	public static void handle(SpawnParticlesPacket packet, Supplier<NetworkEvent.Context> ctx)
+	public static void handle(SpawnParticlesPacket packet, Supplier<NetworkEvent.Context> context)
 	{
-		ctx.get().enqueueWork(()->DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()->PacketHandler.handlePacket(packet, ctx)));
-		ctx.get().setPacketHandled(true);
+		context.get().enqueueWork(()->DistExecutor.unsafeRunWhenOn(Dist.CLIENT, ()->()->PacketHandler.handlePacket(packet, context)));
+		context.get().setPacketHandled(true);
 	}
 	
 	private static class PacketHandler
 	{
-		private static void handlePacket(SpawnParticlesPacket packet, @SuppressWarnings("unused") Supplier<NetworkEvent.Context> ctx)
+		private static void handlePacket(SpawnParticlesPacket packet, @SuppressWarnings("unused") Supplier<NetworkEvent.Context> context)
 		{
 			Minecraft mc=Minecraft.getInstance();
-			mc.particleEngine.createTrackingEmitter(mc.level.getPlayerByUUID(packet.player), packet.particle, packet.lifetime);
+			mc.particleEngine.createTrackingEmitter(mc.level.getPlayerByUUID(packet.player), packet.particle, packet.lifeTime);
 		}
 	}
 }

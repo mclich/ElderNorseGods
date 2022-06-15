@@ -1,63 +1,66 @@
 package com.github.mclich.engmod.register;
 
-import java.util.HashMap;
-import java.util.Map;
 import com.github.mclich.engmod.ElderNorseGods;
-import com.github.mclich.engmod.client.render.*;
+import com.github.mclich.engmod.client.model.ValkyrieModel;
+import com.github.mclich.engmod.client.render.ValkyrieRenderer;
 import com.github.mclich.engmod.client.render.player.CastingPlayerRenderer;
-import com.github.mclich.engmod.entity.*;
+import com.github.mclich.engmod.entity.ValkyrieEntity;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.event.RegistryEvent.Register;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions;
+import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import java.util.Map;
 
-@SuppressWarnings("unused")
 @EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.MOD)
 public abstract class ENGEntities
 {
-	//.setShouldReceiveVelocityUpdates(false).setTrackingRange(32).setUpdateInterval(3)
-	public static final EntityType<CustomEntity> CUSTOM_ENTITY=Builder.of(CustomEntity::new, EntityClassification.CREATURE).sized(1F, 2F).build(new ResourceLocation(ElderNorseGods.MOD_ID, CustomEntity.ID).toString());
-	public static final EntityType<ValkyrieEntity> VALKYRIE=Builder.of(ValkyrieEntity::new, EntityClassification.MONSTER).sized(1F, 2F).build(new ResourceLocation(ElderNorseGods.MOD_ID, ValkyrieEntity.ID).toString());
-	
-	@SubscribeEvent
-	public static void registerEntities(Register<EntityType<?>> event)
-	{
-		event.getRegistry().register(ENGEntities.VALKYRIE.setRegistryName(new ResourceLocation(ElderNorseGods.MOD_ID, ValkyrieEntity.ID)));
-	}
+	public static final DeferredRegister<EntityType<?>> ENTITIES=DeferredRegister.create(ForgeRegistries.ENTITIES, ElderNorseGods.MOD_ID);
+
+	public static final RegistryObject<EntityType<ValkyrieEntity>> VALKYRIE=ENGEntities.ENTITIES.register(ValkyrieEntity.ID, ()->Builder.of(ValkyrieEntity::new, MobCategory.MONSTER).sized(1F, 2F).build(new ResourceLocation(ElderNorseGods.MOD_ID, ValkyrieEntity.ID).toString()));
 	
 	@SubscribeEvent
 	public static void registerEntityAttributes(EntityAttributeCreationEvent event)
 	{
-		event.put(ENGEntities.VALKYRIE, ValkyrieEntity.createAttributes().build());
+		event.put(ENGEntities.VALKYRIE.get(), ValkyrieEntity.createAttributes().build());
 	}
-	
+
 	@SubscribeEvent
-    public static void registerEntityRenderers(FMLClientSetupEvent event)
-    {
-		RenderingRegistry.registerEntityRenderingHandler(ENGEntities.VALKYRIE, ValkyrieRenderer::new);
-    }
-	
-	@SubscribeEvent(priority=EventPriority.HIGHEST)
-	public static void registerPlayerRenderers(FMLClientSetupEvent event)
+	public static void registerEntityLayers(RegisterLayerDefinitions event)
 	{
-		event.enqueueWork(()->
-		{
-			Map<String, PlayerRenderer> renderers=new HashMap<>();
-			EntityRendererManager manager=Minecraft.getInstance().getEntityRenderDispatcher();
-			manager.getSkinMap().forEach((s, r)->renderers.put(s, new CastingPlayerRenderer(manager, s.equals("slim"))));
-			ObfuscationReflectionHelper.setPrivateValue(EntityRendererManager.class, manager, renderers, "playerRenderers");
-		});
+		event.registerLayerDefinition(ValkyrieModel.LAYER_LOCATION, ValkyrieModel::createBodyLayer);
+	}
+
+	@SubscribeEvent
+    public static void registerEntityRenderers(RegisterRenderers event)
+    {
+		event.registerEntityRenderer(ENGEntities.VALKYRIE.get(), ValkyrieRenderer::new);
+    }
+
+	@SubscribeEvent(priority=EventPriority.HIGHEST)
+	public static void registerPlayerRenderers(EntityRenderersEvent.AddLayers event)
+	{
+		Minecraft mc=Minecraft.getInstance();
+		EntityRenderDispatcher dispatcher=mc.getEntityRenderDispatcher();
+		EntityRendererProvider.Context context=new EntityRendererProvider.Context(dispatcher, mc.getItemRenderer(), mc.getResourceManager(), event.getEntityModels(), mc.font);
+		Map<String, EntityRenderer<? extends Player>> playerRenderers=ImmutableMap.of("default", new CastingPlayerRenderer(context, false), "slim", new CastingPlayerRenderer(context, true));
+		ObfuscationReflectionHelper.setPrivateValue(EntityRenderDispatcher.class, dispatcher, playerRenderers, "playerRenderers");
 	}
 }

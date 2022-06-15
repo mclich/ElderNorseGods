@@ -1,13 +1,13 @@
 package com.github.mclich.engmod.network;
 
 import com.github.mclich.engmod.ElderNorseGods;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 public abstract class NetworkHandler
 {
@@ -21,31 +21,31 @@ public abstract class NetworkHandler
 	);
 
 	@SuppressWarnings("unused")
-	public static <M> void sendToServer(M msg)
+	public static <M> void sendToServer(M message)
 	{
-		NetworkHandler.CHANNEL.sendToServer(msg);
+		NetworkHandler.CHANNEL.sendToServer(message);
 	}
 	
-	public static <M> void sendToPlayer(ServerPlayerEntity player, M msg)
+	public static <M> void sendToPlayer(ServerPlayer player, M message)
 	{
-		NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(()->player), msg);
+		NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(()->player), message);
 	}
 	
-	public static <M> void sendToTrackingEntity(Entity entity, M msg)
+	public static <M> void sendToTrackingEntity(Entity entity, M message)
 	{
-		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity), msg);
+		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entity), message);
 	}
 
 	@SuppressWarnings("unused")
-	public static <M> void sendToTrackingChunk(Chunk chunk, M msg)
+	public static <M> void sendToTrackingChunk(LevelChunk chunk, M message)
 	{
-		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(()->chunk), msg);
+		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(()->chunk), message);
 	}
 
 	@SuppressWarnings("unused")
-	public static <M> void sendToAllPlayers(M msg)
+	public static <M> void sendToAllPlayers(M message)
 	{
-		NetworkHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), msg);
+		NetworkHandler.CHANNEL.send(PacketDistributor.ALL.noArg(), message);
 	}
 	
 	public static SimpleChannel getChannel()

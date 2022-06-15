@@ -1,8 +1,8 @@
-package com.github.mclich.engmod.data.handler;
+package com.github.mclich.engmod.data.capability;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
-public interface IManaHandler
+public interface IManaStorage
 {
 	float getMana();
 	
@@ -12,16 +12,16 @@ public interface IManaHandler
 	
 	void setStatus(boolean status);
 	
-	void update(ServerPlayerEntity player);
+	void update(ServerPlayer player);
 	
-	default void setAndUpdateMana(ServerPlayerEntity player, float amount)
+	default void setAndUpdateMana(ServerPlayer player, float amount)
 	{
 		this.setMana(amount);
 		this.update(player);
 	}
 
 	@SuppressWarnings("unused")
-	default void setAndUpdateStatus(ServerPlayerEntity player, boolean status)
+	default void setAndUpdateStatus(ServerPlayer player, boolean status)
 	{
 		this.setStatus(status);
 		this.update(player);

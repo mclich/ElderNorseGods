@@ -1,45 +1,45 @@
 package com.github.mclich.engmod.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap.MutableAttribute;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.FlyingMovementController;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.PanicGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.pathfinding.FlyingPathNavigator;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
-public class ValkyrieEntity extends MonsterEntity
+public class ValkyrieEntity extends Monster
 {
 	public static final String ID="valkyrie";
 	public static final String SPAWN_EGG_ID="valkyrie_spawn_egg";
 	
 	//private static final Ingredient TEMPTATION_ITEMS=Ingredient.of(Items.CARROT);
 	
-	public ValkyrieEntity(EntityType<? extends MonsterEntity> type, World worldIn)
+	public ValkyrieEntity(EntityType<? extends Monster> type, Level world)
 	{
-		super(type, worldIn);
-		this.setItemSlot(EquipmentSlotType.MAINHAND, new ItemStack(Items.IRON_SWORD, 1));
-		this.moveControl=new FlyingMovementController(this, 10, true);
-		this.navigation=new FlyingPathNavigator(this, worldIn);
+		super(type, world);
+		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD, 1));
+		this.moveControl=new FlyingMoveControl(this, 10, true);
+		this.navigation=new FlyingPathNavigation(this, world);
 	}
 	
-	public static MutableAttribute createAttributes()
+	public static Builder createAttributes()
 	{
-		return MonsterEntity.createMonsterAttributes()
+		return Monster.createMonsterAttributes()
 			.add(Attributes.MAX_HEALTH, 60D)
 			.add(Attributes.MOVEMENT_SPEED, 0.35)
 			.add(Attributes.ATTACK_DAMAGE, 10D)
@@ -52,16 +52,16 @@ public class ValkyrieEntity extends MonsterEntity
 	public void registerGoals()
 	{
 		int i=0;
-		this.goalSelector.addGoal(i++, new SwimGoal(this));
+		this.goalSelector.addGoal(i++, new FloatGoal(this));
 		this.goalSelector.addGoal(i++, new PanicGoal(this, 1.25D));
 		//this.goalSelector.addGoal(i++, new TemptGoal(this, 1.25D, ValkyrieEntity.TEMPTATION_ITEMS, false));
-		this.goalSelector.addGoal(i++, new WaterAvoidingRandomWalkingGoal(this, 0.8));
-		this.goalSelector.addGoal(i++, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-		this.goalSelector.addGoal(i, new LookRandomlyGoal(this));
+		this.goalSelector.addGoal(i++, new WaterAvoidingRandomStrollGoal(this, 0.8));
+		this.goalSelector.addGoal(i++, new LookAtPlayerGoal(this, Player.class, 6.0F));
+		this.goalSelector.addGoal(i, new RandomLookAroundGoal(this));
 	}
 	
 	@Override
-	public int getExperienceReward(PlayerEntity player)
+	public int getExperienceReward(Player player)
 	{
 		return 15;
 	}
@@ -85,7 +85,7 @@ public class ValkyrieEntity extends MonsterEntity
 	}
 
 	@Override
-	public void playStepSound(BlockPos pos, BlockState blockOn)
+	public void playStepSound(BlockPos blockPos, BlockState blockOn)
 	{
 		this.playSound(SoundEvents.NETHER_SPROUTS_STEP, 0.15F, 1F);
 	}

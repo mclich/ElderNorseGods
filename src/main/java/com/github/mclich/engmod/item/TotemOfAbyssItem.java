@@ -7,24 +7,24 @@ import com.github.mclich.engmod.network.packet.ItemActivationPacket;
 import com.github.mclich.engmod.network.packet.SpawnParticlesPacket;
 import com.github.mclich.engmod.register.ENGItems;
 import com.github.mclich.engmod.register.ENGTabs;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.network.play.server.SChangeGameStatePacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.IWorldInfo;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.LevelData;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -39,25 +39,25 @@ public class TotemOfAbyssItem extends Item
 		super(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(ENGTabs.COMBAT));
 	}
 	
-	private float getResRot(BlockPos blockSpawnPos, Vector3d playerSpawnPos)
+	private float getResRot(BlockPos blockSpawnPos, Vec3 playerSpawnPos)
 	{
-		Vector3d vector=Vector3d.atBottomCenterOf(blockSpawnPos).subtract(playerSpawnPos).normalize();
-        return (float)MathHelper.wrapDegrees(MathHelper.atan2(vector.z, vector.x)*(double)(180F/(float)Math.PI)-90D);
+		Vec3 vector=Vec3.atBottomCenterOf(blockSpawnPos).subtract(playerSpawnPos).normalize();
+        return (float)Mth.wrapDegrees(Mth.atan2(vector.z, vector.x)*(double)(180F/(float)Math.PI)-90D);
 	}
 	
-	private void activateTotem(ServerWorld world, ServerPlayerEntity player, ItemStack itemStack)
+	private void activateTotem(ServerLevel world, ServerPlayer player, ItemStack itemStack)
 	{
 		player.fallDistance=0F;
 		ItemStack totem=itemStack.copy();
 		if(player.gameMode.isSurvival()) itemStack.shrink(1);
-		if(world.dimension()==World.END) player.moveTo(100.5F, 49F, 0.5F);
+		if(world.dimension()==Level.END) player.moveTo(100.5F, 49F, 0.5F);
 		else
 		{
-			ServerWorld spawnDimension=world.getServer().getLevel(player.getRespawnDimension());
-			Optional<Vector3d> o=PlayerEntity.findRespawnPositionAndUseSpawnBlock(spawnDimension, player.getRespawnPosition(), player.getRespawnAngle(), player.isRespawnForced(), false);
+			ServerLevel spawnDimension=world.getServer().getLevel(player.getRespawnDimension());
+			Optional<Vec3> o=Player.findRespawnPositionAndUseSpawnBlock(spawnDimension, player.getRespawnPosition(), player.getRespawnAngle(), player.isRespawnForced(), false);
 			if(o.isPresent())
 			{
-				Vector3d playerSpawn=o.get();
+				Vec3 playerSpawn=o.get();
 				if(world==spawnDimension) player.moveTo(playerSpawn);
 				else
 				{
@@ -66,35 +66,35 @@ public class TotemOfAbyssItem extends Item
 				}
 				if(world.getBlockState(player.getRespawnPosition()).is(Blocks.RESPAWN_ANCHOR))
 				{
-					world.playSound(null, player.getRespawnPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundCategory.BLOCKS, 1F, 1F);
+					world.playSound(null, player.getRespawnPosition(), SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundSource.BLOCKS, 1F, 1F);
 				}
 			}
 			else
 			{
-				IWorldInfo worldSpawn=world.getLevelData();
-				if(world.dimension()==World.OVERWORLD) player.moveTo(worldSpawn.getXSpawn(), worldSpawn.getYSpawn(), worldSpawn.getZSpawn());
+				LevelData worldSpawn=world.getLevelData();
+				if(world.dimension()==Level.OVERWORLD) player.moveTo(worldSpawn.getXSpawn(), worldSpawn.getYSpawn(), worldSpawn.getZSpawn());
 				else
 				{
-					world=world.getServer().getLevel(World.OVERWORLD);
+					world=world.getServer().getLevel(Level.OVERWORLD);
 					player.teleportTo(world, worldSpawn.getXSpawn(), worldSpawn.getYSpawn(), worldSpawn.getZSpawn(), player.getRespawnAngle(), 0F);
 				}
-				player.connection.send(new SChangeGameStatePacket(SChangeGameStatePacket.NO_RESPAWN_BLOCK_AVAILABLE, 0F));
+				player.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.NO_RESPAWN_BLOCK_AVAILABLE, 0F));
 			}
 		}
 		NetworkHandler.sendToPlayer(player, new ItemActivationPacket(totem));
 		NetworkHandler.sendToTrackingEntity(player, new SpawnParticlesPacket(ParticleTypes.PORTAL, player.getUUID(), 30));
-		world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundCategory.PLAYERS, 1F, 1F);
+		world.playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1F, 1F);
 		//player.playSound(SoundEvents.TOTEM_USE, 1F, 1F);
 	}
 	
 	@Override
-	public void inventoryTick(ItemStack itemStack, World world, Entity entity, int tick, boolean flag)
+	public void inventoryTick(ItemStack itemStack, Level world, Entity entity, int tick, boolean isSelected)
 	{
-		if(!world.isClientSide()&&entity instanceof PlayerEntity&&entity.getY()<0&&((PlayerEntity)entity).getLastDamageSource()==DamageSource.OUT_OF_WORLD)
+		if(!world.isClientSide()&&entity instanceof Player&&entity.getY()<0&&((Player)entity).getLastDamageSource()==DamageSource.OUT_OF_WORLD)
 		{
-			ServerPlayerEntity player=(ServerPlayerEntity)entity;
-			if(player.getMainHandItem().getItem()==this) this.activateTotem((ServerWorld)world, player, player.getMainHandItem());
-			else if(player.getOffhandItem().getItem()==this) this.activateTotem((ServerWorld)world, player, player.getOffhandItem());
+			ServerPlayer player=(ServerPlayer)entity;
+			if(player.getMainHandItem().getItem()==this) this.activateTotem((ServerLevel)world, player, player.getMainHandItem());
+			else if(player.getOffhandItem().getItem()==this) this.activateTotem((ServerLevel)world, player, player.getOffhandItem());
 		}
 	}
 	
@@ -104,10 +104,9 @@ public class TotemOfAbyssItem extends Item
 		@SubscribeEvent
 		public static void onVoidDamage(LivingDamageEvent event)
 		{
-			if(event.getEntityLiving() instanceof PlayerEntity)
+			if(event.getEntityLiving() instanceof Player player)
 			{
 				Item totem=ENGItems.TOTEM_OF_ABYSS.get();
-				PlayerEntity player=(PlayerEntity)event.getEntityLiving();
 				if((player.getMainHandItem().getItem()==totem||player.getOffhandItem().getItem()==totem)&&event.getSource()==DamageSource.OUT_OF_WORLD)
 				{
 					event.setAmount(0F);

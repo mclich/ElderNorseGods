@@ -1,19 +1,19 @@
 package com.github.mclich.engmod.recipe;
 
-import com.github.mclich.engmod.entity.tile.BreweryTileEntity;
+import com.github.mclich.engmod.entity.block.BreweryBlockEntity;
 import com.github.mclich.engmod.register.ENGBlocks;
 import com.github.mclich.engmod.register.ENGRecipeTypes;
 import com.github.mclich.engmod.register.ENGSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
-public class BrewingRecipe implements IRecipe<BreweryTileEntity>
+public class BrewingRecipe implements Recipe<BreweryBlockEntity>
 {
 	public static final String ID="brewing";
 	
@@ -24,7 +24,7 @@ public class BrewingRecipe implements IRecipe<BreweryTileEntity>
 	private final float experience;
 	private final int brewTime;
 	
-	public BrewingRecipe(ResourceLocation location, ItemStack result, Ingredient bottle, Ingredient ingredient, float experience, int brewTime)
+	public BrewingRecipe(ResourceLocation location, Ingredient bottle, Ingredient ingredient, ItemStack result, float experience, int brewTime)
 	{
 		this.location=location;
 		this.result=result;
@@ -41,22 +41,22 @@ public class BrewingRecipe implements IRecipe<BreweryTileEntity>
 	}
 	
 	@Override
-	public boolean matches(BreweryTileEntity tileEntity, World world)
+	public boolean matches(BreweryBlockEntity breweryEntity, Level world)
 	{
-		return (this.bottle.test(tileEntity.getItem(0))||
-			    this.bottle.test(tileEntity.getItem(1))||
-			    this.bottle.test(tileEntity.getItem(2)))&&
-			    this.ingredient.test(tileEntity.getItem(4));
+		return (this.bottle.test(breweryEntity.getItem(0))||
+			    this.bottle.test(breweryEntity.getItem(1))||
+			    this.bottle.test(breweryEntity.getItem(2)))&&
+			    this.ingredient.test(breweryEntity.getItem(4));
 	}
 
 	@Override
-	public ItemStack assemble(BreweryTileEntity tileEntity)
+	public ItemStack assemble(BreweryBlockEntity breweryEntity)
 	{
 		return this.result.copy();
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int ignore, int ignore_)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return true;
 	}
@@ -72,11 +72,24 @@ public class BrewingRecipe implements IRecipe<BreweryTileEntity>
 	{
 		return this.result;
 	}
-	
+
+	public Ingredient getBottleIngredient()
+	{
+		return this.bottle;
+	}
+
+	public Ingredient getCookIngredient()
+	{
+		return this.ingredient;
+	}
+
 	@Override
 	public NonNullList<Ingredient> getIngredients()
 	{
-		return NonNullList.of(bottle, bottle, ingredient);
+		NonNullList<Ingredient> result=NonNullList.create();
+		result.add(this.bottle);
+		result.add(this.ingredient);
+		return result;
 	}
 	
 	public float getExperience()
@@ -90,13 +103,13 @@ public class BrewingRecipe implements IRecipe<BreweryTileEntity>
 	}
 
 	@Override
-	public IRecipeType<?> getType()
+	public RecipeType<?> getType()
 	{
 		return ENGRecipeTypes.getBrewingType();
 	}
 	
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return ENGSerializers.BREWERY_SERIALIZER.get();
 	}
