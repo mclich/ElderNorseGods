@@ -3,6 +3,7 @@ package com.github.mclich.engmod.register;
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.data.capability.IManaStorage;
 import com.github.mclich.engmod.data.provider.ManaProvider;
+import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +27,7 @@ public abstract class ENGCapabilities
 	public static void registerCapabilities(RegisterCapabilitiesEvent event)
 	{
 		event.register(IManaStorage.class);
+		ElderNorseGods.LOGGER.info("Registering capabilities completed");
 	}
 
 	@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.FORGE)
@@ -36,6 +38,7 @@ public abstract class ENGCapabilities
 		{
 			if(!(event.getObject() instanceof Player)) return;
 			event.addCapability(ENGCapabilities.MANA_LOCATION, new ManaProvider());
+			ElderNorseGods.LOGGER.info("Attaching {} capability to players completed", LogUtils.defer(ENGCapabilities.MANA::getName));
 		}
 	}
 }

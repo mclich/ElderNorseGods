@@ -7,11 +7,11 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class StaffParticleData implements ParticleOptions
+public class StaffParticleOptions implements ParticleOptions
 {
 	private final int color;
 	
-	public StaffParticleData(int color)
+	public StaffParticleOptions(int color)
 	{
 		this.color=color;
 	}

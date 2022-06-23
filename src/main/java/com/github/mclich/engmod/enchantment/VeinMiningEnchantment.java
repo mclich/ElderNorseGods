@@ -2,25 +2,24 @@ package com.github.mclich.engmod.enchantment;
 
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.register.ENGEnchantments;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags.Blocks;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-public class VeinMinerEnchantment extends Enchantment
+public class VeinMiningEnchantment extends Enchantment
 {
-	public static final String ID="vein_miner";
+	public static final String ID="vein_mining";
 	
-	public VeinMinerEnchantment()
+	public VeinMiningEnchantment()
 	{
 		super(Rarity.RARE, ENGEnchantments.Types.PICKAXE_ONLY, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
 	}
@@ -70,7 +69,7 @@ public class VeinMinerEnchantment extends Enchantment
 		@SubscribeEvent
 		public static void blockDestroy(BreakEvent event)
 		{
-			if(!event.getWorld().isClientSide()&&EnchantmentHelper.getItemEnchantmentLevel(ENGEnchantments.VEIN_MINER.get(), event.getPlayer().getMainHandItem())>0&&event.getState().is(Blocks.ORES))
+			if(!event.getWorld().isClientSide()&&event.getPlayer().getMainHandItem().getEnchantmentLevel(ENGEnchantments.VEIN_MINING.get())>0&&event.getState().is(Blocks.ORES))
 			{
 				EventHandler.mineVein((ServerPlayer)event.getPlayer(), (Level)event.getWorld(), event.getPos(), event.getState(), event.getState().getBlock());
 			}

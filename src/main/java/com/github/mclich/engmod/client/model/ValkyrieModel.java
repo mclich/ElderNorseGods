@@ -82,10 +82,11 @@ public class ValkyrieModel extends EntityModel<ValkyrieEntity>
 		return LayerDefinition.create(mesh, 128, 128);
 	}
 
+	//todo: make animation
 	@Override
 	public void setupAnim(ValkyrieEntity valkyrie, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
-
+		
 	}
 
 	@Override

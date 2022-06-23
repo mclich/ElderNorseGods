@@ -8,12 +8,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 
-public class StaffParticleType extends ParticleType<StaffParticleData>
+public class StaffParticleType extends ParticleType<StaffParticleOptions>
 {
-	private static final Codec<StaffParticleData> CODEC=RecordCodecBuilder.create(i->i.group(Codec.INT.fieldOf("color").forGetter(StaffParticleData::getColor)).apply(i, StaffParticleData::new));
-	private static final @SuppressWarnings("deprecation") ParticleOptions.Deserializer<StaffParticleData> DESERIALIZER=new ParticleOptions.Deserializer<>()
+	private static final Codec<StaffParticleOptions> CODEC=RecordCodecBuilder.create(i->i.group(Codec.INT.fieldOf("color").forGetter(StaffParticleOptions::getColor)).apply(i, StaffParticleOptions::new));
+	private static final @SuppressWarnings("deprecation") ParticleOptions.Deserializer<StaffParticleOptions> DESERIALIZER=new ParticleOptions.Deserializer<>()
 	{
-		public StaffParticleData fromCommand(ParticleType<StaffParticleData> type, StringReader reader) throws CommandSyntaxException
+		public StaffParticleOptions fromCommand(ParticleType<StaffParticleOptions> type, StringReader reader) throws CommandSyntaxException
 		{
 			reader.expect(' ');
 			int r=reader.readInt();
@@ -24,12 +24,12 @@ public class StaffParticleType extends ParticleType<StaffParticleData>
 			reader.expect(' ');
 			int b=reader.readInt();
 			if(b>255||b<0) throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.readerInvalidInt().createWithContext(reader, b);
-			return new StaffParticleData(((r&255)<<16)|((g&255)<<8)|(b&255));
+			return new StaffParticleOptions(((r&255)<<16)|((g&255)<<8)|(b&255));
 		}
 
-		public StaffParticleData fromNetwork(ParticleType<StaffParticleData> type, FriendlyByteBuf buffer)
+		public StaffParticleOptions fromNetwork(ParticleType<StaffParticleOptions> type, FriendlyByteBuf buffer)
 		{
-			return new StaffParticleData(buffer.readInt());
+			return new StaffParticleOptions(buffer.readInt());
 		}
 	};
 	
@@ -39,7 +39,7 @@ public class StaffParticleType extends ParticleType<StaffParticleData>
 	}
 
 	@Override
-	public Codec<StaffParticleData> codec()
+	public Codec<StaffParticleOptions> codec()
 	{
 		return StaffParticleType.CODEC;
 	}

@@ -1,5 +1,4 @@
 {
-	"item.engmod.custom_material": "Кастомный материал",
 	"item.engmod.barley": "Ячмень",
 	"item.engmod.barley_seeds": "Семена ячменя",
 	"item.engmod.hop": "Хмель",
@@ -17,7 +16,6 @@
 	"item.engmod.custom_sword": "Кастомный меч",
 	"item.engmod.healing_staff": "Посох исцеления",
 	"item.engmod.regeneration_staff": "Посох регенерации",
-	"item.engmod.custom_block": "Кастомный блок",
 	"item.engmod.valkyrie_spawn_egg": "Яйцо призыва валькирии",
 	"item.minecraft.bread": "Пшеничный хлеб",
 	"item.minecraft.potion.effect.anemia": "Зелье анемии",
@@ -45,7 +43,7 @@
 	"effect.engmod.instant_loss": "Моментальная потеря",
 	"effect.engmod.replenishment": "Восполнение",
 	"entity.engmod.valkyrie": "Валькирия",
-	"enchantment.engmod.vein_miner": "Добыча жилы",
+	"enchantment.engmod.vein_mining": "Добыча жилы",
 	"enchantment.engmod.quick_swing": "Быстрый взмах",
 	"itemGroup.engmod.combat": "ENG: Оружие и доспехи",
 	"itemGroup.engmod.tools": "ENG: Инструменты",
@@ -54,5 +52,7 @@
 	"itemGroup.engmod.misc": "ENG: Разное",
 	"itemGroup.engmod.food": "ENG: Пища",
 	"message.engmod.no_mana_points": "Недостаточно маны",
-	"message.engmod.no_mana_access": "Вы пока не можете использовать этот предмет"
+	"message.engmod.no_mana_access": "Вы пока не можете использовать этот предмет",
+	"message.engmod.key_disabled": "Клавиша отключена",
+	"message.engmod.anemia_active": "На %s действует Анемия"
 }

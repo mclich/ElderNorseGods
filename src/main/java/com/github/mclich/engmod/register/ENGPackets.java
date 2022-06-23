@@ -3,6 +3,7 @@ package com.github.mclich.engmod.register;
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.network.NetworkHandler;
 import com.github.mclich.engmod.network.packet.*;
+import com.mojang.logging.LogUtils;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -16,10 +17,12 @@ public abstract class ENGPackets
     {
 		event.enqueueWork(()->
 		{
-			int id=0;
+			int id=0, count;
 			NetworkHandler.getChannel().registerMessage(id++, ItemActivationPacket.class, ItemActivationPacket::encode, ItemActivationPacket::decode, ItemActivationPacket::handle);
 			NetworkHandler.getChannel().registerMessage(id++, SpawnParticlesPacket.class, SpawnParticlesPacket::encode, SpawnParticlesPacket::decode, SpawnParticlesPacket::handle);
-			NetworkHandler.getChannel().registerMessage(id, ManaDataPacket.class, ManaDataPacket::encode, ManaDataPacket::decode, ManaDataPacket::handle);
+			NetworkHandler.getChannel().registerMessage(id++, ManaDataPacket.class, ManaDataPacket::encode, ManaDataPacket::decode, ManaDataPacket::handle);
+			count=id;
+			ElderNorseGods.LOGGER.info("Registering {} packets completed", LogUtils.defer(()->count));
 		});
     }
 }

@@ -2,10 +2,9 @@ package com.github.mclich.engmod.item.staff;
 
 import com.github.mclich.engmod.data.capability.IManaStorage;
 import com.github.mclich.engmod.register.ENGCapabilities;
+import com.github.mclich.engmod.register.ENGItemTiers.StaffTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -13,10 +12,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-
 import java.util.List;
 
 public abstract class ReversibleStaffItem extends StaffItem
@@ -28,9 +25,9 @@ public abstract class ReversibleStaffItem extends StaffItem
 	protected final float effectToApply;
 	protected final float cooldown;
 	
-	public ReversibleStaffItem(Rarity rarity, int particleColor, int durability, int manaUseDelay, float manaToConsume, float effectToApply, float cooldown)
+	public ReversibleStaffItem(StaffTier tier, int manaUseDelay, float manaToConsume, float effectToApply, float cooldown)
 	{
-		super(rarity, particleColor, durability);
+		super(tier);
 		this.consumedMana=0F;
 		this.manaUseDelay=manaUseDelay;
 		this.manaToConsume=manaToConsume;
@@ -51,13 +48,13 @@ public abstract class ReversibleStaffItem extends StaffItem
 		{
 			itemStack.hideTooltipPart(TooltipPart.ENCHANTMENTS);
 			ItemStack.appendEnchantmentNames(textField, itemStack.getEnchantmentTags());
-			textField.add(TextComponent.EMPTY);
+			textField.add(Component.empty());
 		}
-		textField.add(new TranslatableComponent("staff.engmod.cooldown", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.cooldown)).withStyle(ChatFormatting.RED));
-		textField.add(TextComponent.EMPTY);
-		textField.add(new TranslatableComponent("staff.engmod.used").withStyle(ChatFormatting.GRAY));
-		textField.add(new TranslatableComponent("staff.engmod.rev_mana", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.manaToConsume)).withStyle(ChatFormatting.DARK_GREEN));
-		textField.add(new TranslatableComponent("staff.engmod.rev_effect_regen", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.effectToApply)).withStyle(ChatFormatting.DARK_GREEN));
+		textField.add(Component.translatable("staff.engmod.cooldown", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.cooldown)).withStyle(ChatFormatting.RED));
+		textField.add(Component.empty());
+		textField.add(Component.translatable("staff.engmod.used").withStyle(ChatFormatting.GRAY));
+		textField.add(Component.translatable("staff.engmod.rev_mana", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.manaToConsume)).withStyle(ChatFormatting.DARK_GREEN));
+		textField.add(Component.translatable("staff.engmod.rev_effect_regen", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(this.effectToApply)).withStyle(ChatFormatting.DARK_GREEN));
 	}
 
 	@Override
@@ -80,13 +77,13 @@ public abstract class ReversibleStaffItem extends StaffItem
 			}
 			else
 			{
-				player.displayClientMessage(new TranslatableComponent("message.engmod.no_mana_points"), true);
+				player.displayClientMessage(Component.translatable("message.engmod.no_mana_points"), true);
 				return InteractionResultHolder.fail(handItem);
 			}
 		}
 		else
 		{
-			player.displayClientMessage(new TranslatableComponent("message.engmod.no_mana_access"), true);
+			player.displayClientMessage(Component.translatable("message.engmod.no_mana_access"), true);
 			return InteractionResultHolder.fail(handItem);
 		}
 	}

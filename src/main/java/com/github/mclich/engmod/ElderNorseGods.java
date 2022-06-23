@@ -12,13 +12,14 @@ import org.apache.logging.log4j.Logger;
 public class ElderNorseGods
 {
 	public static final String MOD_ID="engmod";
-	public static final Logger LOGGER=LogManager.getLogger(ElderNorseGods.class);
-	
+	public static final Logger LOGGER=LogManager.getLogger(ElderNorseGods.class.getSimpleName());
+
+	//todo: add javadocs
 	public ElderNorseGods()
 	{
 		IEventBus eventBus=FMLJavaModLoadingContext.get().getModEventBus();
 		ENGParticles.PARTICLES.register(eventBus);
-		ENGEffects.EFFECTS.register(eventBus);
+		ENGMobEffects.MOB_EFFECTS.register(eventBus);
 		ENGPotions.POTIONS.register(eventBus);
 		ENGEnchantments.ENCHANTMENTS.register(eventBus);
 		ENGItems.ITEMS.register(eventBus);
@@ -26,7 +27,9 @@ public class ElderNorseGods
 		ENGBlockEntities.BLOCK_ENTITIES.register(eventBus);
 		ENGContainers.CONTAINERS.register(eventBus);
 		ENGEntities.ENTITIES.register(eventBus);
+		ENGRecipes.RECIPE_TYPES.register(eventBus);
 		ENGSerializers.SERIALIZERS.register(eventBus);
 		MinecraftForge.EVENT_BUS.register(this);
+		ElderNorseGods.LOGGER.info("Mod initialization completed");
 	}
 }

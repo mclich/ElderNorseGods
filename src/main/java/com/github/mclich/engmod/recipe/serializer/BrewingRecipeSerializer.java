@@ -1,5 +1,6 @@
 package com.github.mclich.engmod.recipe.serializer;
 
+import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.recipe.BrewingRecipe;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -11,9 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class BrewingRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<BrewingRecipe>
+public class BrewingRecipeSerializer implements RecipeSerializer<BrewingRecipe>
 {
 	private final BrewingSupplier<BrewingRecipe> supplier;
 	private final float defaultExperience;
@@ -52,7 +52,11 @@ public class BrewingRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer
 	{
 		String location=GsonHelper.getAsString(json, "result");
 		Item resultItem=ForgeRegistries.ITEMS.getValue(new ResourceLocation(location));
-		if(resultItem==null) throw new IllegalStateException("Item '"+location+"' does not exist");
+		if(resultItem==null)
+		{
+			ElderNorseGods.LOGGER.error("Cannot found result item from brewing recipe by key '{}'", location);
+			return ItemStack.EMPTY;
+		}
 		return new ItemStack(resultItem);
 	}
 

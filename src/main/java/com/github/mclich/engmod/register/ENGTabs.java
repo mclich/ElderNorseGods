@@ -6,7 +6,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 public abstract class ENGTabs
 {
 	private static final Comparator<ItemStack> NAME_COMPARATOR=Comparator.comparing(is->is.getItem().getDescriptionId());
-	private static final Comparator<ItemStack> FOOD_COMPARATOR=(is1, is2)->Integer.compare(is2.getItem().getFoodProperties().getNutrition(), is1.getItem().getFoodProperties().getNutrition());
+	private static final @SuppressWarnings("deprecation") Comparator<ItemStack> FOOD_COMPARATOR=(is1, is2)->Integer.compare(is2.getItem().getFoodProperties().getNutrition(), is1.getItem().getFoodProperties().getNutrition());
 	private static final int DELAY=3*20;
-	
+
 	public static final CreativeModeTab COMBAT=new CreativeModeTab("engmod.combat")
 	{
 		@Override

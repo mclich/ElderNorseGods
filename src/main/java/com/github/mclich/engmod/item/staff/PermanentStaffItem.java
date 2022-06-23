@@ -1,31 +1,28 @@
 package com.github.mclich.engmod.item.staff;
 
-import java.util.List;
-
 import com.github.mclich.engmod.data.capability.IManaStorage;
 import com.github.mclich.engmod.register.ENGCapabilities;
-import net.minecraft.world.item.TooltipFlag;
+import com.github.mclich.engmod.register.ENGItemTiers.StaffTier;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ItemStack.TooltipPart;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import java.util.List;
 
 public abstract class PermanentStaffItem extends StaffItem
 {
 	protected final int manaUseDelay;
 	protected final int effectUseDelay;
 	
-	public PermanentStaffItem(Rarity rarity, int particleColor, int durability, int manaUseDelay, int effectUseDelay)
+	public PermanentStaffItem(StaffTier tier, int manaUseDelay, int effectUseDelay)
 	{
-		super(rarity, particleColor, durability);
+		super(tier);
 		this.manaUseDelay=manaUseDelay;
 		this.effectUseDelay=effectUseDelay;
 	}
@@ -44,10 +41,10 @@ public abstract class PermanentStaffItem extends StaffItem
 			itemStack.hideTooltipPart(TooltipPart.ENCHANTMENTS);
 			ItemStack.appendEnchantmentNames(textField, itemStack.getEnchantmentTags());
 		}
-		textField.add(TextComponent.EMPTY);
-		textField.add(new TranslatableComponent("staff.engmod.used").withStyle(ChatFormatting.GRAY));
-		textField.add(new TranslatableComponent("staff.engmod.perm_mana", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.manaUseDelay)).withStyle(ChatFormatting.DARK_GREEN));
-		textField.add(new TranslatableComponent("staff.engmod.perm_effect_heal", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.effectUseDelay)).withStyle(ChatFormatting.DARK_GREEN));
+		textField.add(Component.empty());
+		textField.add(Component.translatable("staff.engmod.used").withStyle(ChatFormatting.GRAY));
+		textField.add(Component.translatable("staff.engmod.perm_mana", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.manaUseDelay)).withStyle(ChatFormatting.DARK_GREEN));
+		textField.add(Component.translatable("staff.engmod.perm_effect_heal", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(20F/this.effectUseDelay)).withStyle(ChatFormatting.DARK_GREEN));
 	}
 
 	@Override
@@ -70,13 +67,13 @@ public abstract class PermanentStaffItem extends StaffItem
 			}
 			else
 			{
-				player.displayClientMessage(new TranslatableComponent("message.engmod.no_mana_points"), true);
+				player.displayClientMessage(Component.translatable("message.engmod.no_mana_points"), true);
 				return InteractionResultHolder.fail(handItem);
 			}
 		}
 		else
 		{
-			player.displayClientMessage(new TranslatableComponent("message.engmod.no_mana_access"), true);
+			player.displayClientMessage(Component.translatable("message.engmod.no_mana_access"), true);
 			return InteractionResultHolder.fail(handItem);
 		}
 	}

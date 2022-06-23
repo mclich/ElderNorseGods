@@ -56,7 +56,7 @@ public class StaffParticle extends TextureSheetParticle
 		return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
 	}
 	
-	public static class Factory implements ParticleProvider<StaffParticleData>
+	public static class Factory implements ParticleProvider<StaffParticleOptions>
 	{
 		private final SpriteSet sprite;
 		
@@ -66,9 +66,9 @@ public class StaffParticle extends TextureSheetParticle
 		}
 
 		@Override
-		public Particle createParticle(StaffParticleData data, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle createParticle(StaffParticleOptions options, ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
-			return new StaffParticle(world, this.sprite, data.getColor(), x, y, z, xSpeed, ySpeed, zSpeed);
+			return new StaffParticle(world, this.sprite, options.getColor(), x, y, z, xSpeed, ySpeed, zSpeed);
 		}
 	}
 }

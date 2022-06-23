@@ -6,6 +6,7 @@ import com.github.mclich.engmod.client.render.ValkyrieRenderer;
 import com.github.mclich.engmod.client.render.player.CastingPlayerRenderer;
 import com.github.mclich.engmod.entity.ValkyrieEntity;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -24,9 +25,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
 import java.util.Map;
 
 @EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.MOD)
@@ -40,18 +42,21 @@ public abstract class ENGEntities
 	public static void registerEntityAttributes(EntityAttributeCreationEvent event)
 	{
 		event.put(ENGEntities.VALKYRIE.get(), ValkyrieEntity.createAttributes().build());
+		ElderNorseGods.LOGGER.info("Registering entity attributes completed");
 	}
 
 	@SubscribeEvent
 	public static void registerEntityLayers(RegisterLayerDefinitions event)
 	{
 		event.registerLayerDefinition(ValkyrieModel.LAYER_LOCATION, ValkyrieModel::createBodyLayer);
+		ElderNorseGods.LOGGER.info("Registering entity layers completed");
 	}
 
 	@SubscribeEvent
     public static void registerEntityRenderers(RegisterRenderers event)
     {
 		event.registerEntityRenderer(ENGEntities.VALKYRIE.get(), ValkyrieRenderer::new);
+		ElderNorseGods.LOGGER.info("Registering entity renderers completed");
     }
 
 	@SubscribeEvent(priority=EventPriority.HIGHEST)
@@ -59,8 +64,9 @@ public abstract class ENGEntities
 	{
 		Minecraft mc=Minecraft.getInstance();
 		EntityRenderDispatcher dispatcher=mc.getEntityRenderDispatcher();
-		EntityRendererProvider.Context context=new EntityRendererProvider.Context(dispatcher, mc.getItemRenderer(), mc.getResourceManager(), event.getEntityModels(), mc.font);
+		EntityRendererProvider.Context context=new EntityRendererProvider.Context(dispatcher, mc.getItemRenderer(), mc.getBlockRenderer(), mc.getEntityRenderDispatcher().getItemInHandRenderer(), mc.getResourceManager(), event.getEntityModels(), mc.font);
 		Map<String, EntityRenderer<? extends Player>> playerRenderers=ImmutableMap.of("default", new CastingPlayerRenderer(context, false), "slim", new CastingPlayerRenderer(context, true));
 		ObfuscationReflectionHelper.setPrivateValue(EntityRenderDispatcher.class, dispatcher, playerRenderers, "playerRenderers");
+		ElderNorseGods.LOGGER.info("Registering '{}' for players completed", LogUtils.defer(CastingPlayerRenderer.class::getSimpleName));
 	}
 }
