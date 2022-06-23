@@ -56,19 +56,19 @@ public class ManaProvider implements ICapabilitySerializable<CompoundTag>
 		@SubscribeEvent
 		public static void loginUpdate(PlayerLoggedInEvent event)
 		{
-			if(!event.getPlayer().getCommandSenderWorld().isClientSide()) Synchronizer.update((ServerPlayer)event.getPlayer());
+			if(!event.getPlayer().getLevel().isClientSide()) Synchronizer.update((ServerPlayer)event.getPlayer());
 		}
 
 		@SubscribeEvent
 		public static void dimensionUpdate(PlayerChangedDimensionEvent event)
 		{
-			if(!event.getPlayer().getCommandSenderWorld().isClientSide()) Synchronizer.update((ServerPlayer)event.getPlayer());
+			if(!event.getPlayer().getLevel().isClientSide()) Synchronizer.update((ServerPlayer)event.getPlayer());
 		}
 
 		@SubscribeEvent
 		public static void respawnUpdate(PlayerRespawnEvent event)
 		{
-			if(!event.getPlayer().getCommandSenderWorld().isClientSide()) Synchronizer.update((ServerPlayer)event.getPlayer());
+			if(!event.getPlayer().getLevel().isClientSide()) Synchronizer.update((ServerPlayer)event.getPlayer());
 		}
 
 		@SubscribeEvent

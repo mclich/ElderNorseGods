@@ -10,9 +10,9 @@ import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.MOD)
 public abstract class ENGParticles
@@ -26,5 +26,6 @@ public abstract class ENGParticles
 	{
 		ParticleEngine particleManager=Minecraft.getInstance().particleEngine;
 		particleManager.register(ENGParticles.STAFF_PARTICLE.get(), StaffParticle.Factory::new);
+		ElderNorseGods.LOGGER.info("Registering particles completed");
 	}
 }

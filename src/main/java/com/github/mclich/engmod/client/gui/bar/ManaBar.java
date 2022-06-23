@@ -64,7 +64,7 @@ public abstract class ManaBar
 		event.setCanceled(true);
 		ForgeIngameGui gui=new ForgeIngameGui(mc);
 		ObfuscationReflectionHelper.setPrivateValue(Gui.class, gui, mc.gui.getGuiTicks(), "tickCount");
-		gui.renderFood(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight()-10, event.getMatrixStack());
+		gui.renderFood(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight()-10, event.getPoseStack());
 	}
 	
 	@SubscribeEvent
@@ -79,6 +79,6 @@ public abstract class ManaBar
 		if(isHidden||isNotSurvival||isNotPlayer||isNotCorrectOverlay||handler==null||!handler.getStatus()) return;
 		event.setCanceled(true);
 		Method renderAir=ObfuscationReflectionHelper.findMethod(ForgeIngameGui.class, "renderAir", int.class, int.class, PoseStack.class);
-		renderAir.invoke(new ForgeIngameGui(mc), mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight()-20, event.getMatrixStack());
+		renderAir.invoke(new ForgeIngameGui(mc), mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight()-20, event.getPoseStack());
 	}
 }

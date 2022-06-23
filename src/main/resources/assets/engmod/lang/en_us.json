@@ -1,5 +1,4 @@
 {
-	"item.engmod.custom_material": "Custom Material",
 	"item.engmod.barley": "Barley",
 	"item.engmod.barley_seeds": "Barley Seeds",
 	"item.engmod.hop": "Hop",
@@ -17,7 +16,6 @@
 	"item.engmod.custom_sword": "Custom Sword",
 	"item.engmod.healing_staff": "Healing Staff",
 	"item.engmod.regeneration_staff": "Regeneration Staff",
-	"item.engmod.custom_block": "Custom Block",
 	"item.engmod.valkyrie_spawn_egg": "Valkyrie Spawn Egg",
 	"item.minecraft.bread": "Wheat Bread",
 	"item.minecraft.potion.effect.anemia": "Potion of Anemia",
@@ -45,7 +43,7 @@
 	"effect.engmod.instant_loss": "Instant Loss",
 	"effect.engmod.replenishment": "Replenishment",
 	"entity.engmod.valkyrie": "Valkyrie",
-	"enchantment.engmod.vein_miner": "Vein Miner",
+	"enchantment.engmod.vein_mining": "Vein Mining",
 	"enchantment.engmod.quick_swing": "Quick Swing",
 	"itemGroup.engmod.combat": "ENG: Combat",
 	"itemGroup.engmod.tools": "ENG: Tools",
@@ -54,5 +52,7 @@
 	"itemGroup.engmod.misc": "ENG: Miscellaneous",
 	"itemGroup.engmod.food": "ENG: Foodstuffs",
 	"message.engmod.no_mana_points": "Not enough mana",
-	"message.engmod.no_mana_access": "You can not use this item yet"
+	"message.engmod.no_mana_access": "You cannot use this item yet",
+	"message.engmod.key_disabled": "Key is disabled",
+	"message.engmod.anemia_active": "%s is affected by Anemia"
 }

@@ -1,15 +1,9 @@
 package com.github.mclich.engmod.world.gen;
 
 import com.github.mclich.engmod.ElderNorseGods;
-import com.github.mclich.engmod.register.ENGEntities;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -17,6 +11,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 @EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.FORGE)
 public abstract class EntitySpawn
 {
+	/*
 	@SubscribeEvent(priority=EventPriority.HIGH)
 	public static void registerSpawns(BiomeLoadingEvent event)
 	{
@@ -26,6 +21,7 @@ public abstract class EntitySpawn
 			event.getSpawns().addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(ENGEntities.VALKYRIE.get(), 100, 1, 4));
 		}
 	}
+	*/
 	
 	@SubscribeEvent
 	public static void disableItemGravity(EntityJoinWorldEvent event)

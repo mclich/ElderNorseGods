@@ -3,7 +3,7 @@ package com.github.mclich.engmod.block.container;
 import com.github.mclich.engmod.entity.block.BreweryBlockEntity;
 import com.github.mclich.engmod.recipe.BrewingRecipe;
 import com.github.mclich.engmod.register.ENGContainers;
-import com.github.mclich.engmod.register.ENGRecipeTypes;
+import com.github.mclich.engmod.register.ENGRecipes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,14 +24,14 @@ public class BreweryContainer extends AbstractContainerMenu
 	
     public BreweryContainer(int window, Inventory inventory, FriendlyByteBuf buffer)
     {
-    	this(window, inventory.player.getCommandSenderWorld().getBlockEntity(buffer.readBlockPos()), inventory);
+    	this(window, inventory.player.getLevel().getBlockEntity(buffer.readBlockPos()), inventory);
     }
 
     public BreweryContainer(int window, BlockEntity blockEntity, Inventory inventory)
 	{
 		super(ENGContainers.BREWERY_CONTAINER.get(), window);
 		if(blockEntity instanceof BreweryBlockEntity) this.breweryEntity=(BreweryBlockEntity)blockEntity;
-		this.recipes=this.breweryEntity.getLevel().getRecipeManager().getAllRecipesFor(ENGRecipeTypes.getBrewingType());
+		this.recipes=this.breweryEntity.getLevel().getRecipeManager().getAllRecipesFor(ENGRecipes.BREWING.get());
         if(this.breweryEntity!=null)
         {
         	this.breweryEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent
@@ -73,7 +73,7 @@ public class BreweryContainer extends AbstractContainerMenu
 
 	protected boolean isFuel(ItemStack itemStack)
 	{
-		return ForgeHooks.getBurnTime(itemStack, ENGRecipeTypes.getBrewingType())>0;
+		return ForgeHooks.getBurnTime(itemStack, ENGRecipes.BREWING.get())>0;
 	}
 
 	protected boolean isIngredient(ItemStack itemStack)

@@ -4,13 +4,12 @@ import com.github.mclich.engmod.block.BreweryBlock;
 import com.github.mclich.engmod.block.container.BreweryContainer;
 import com.github.mclich.engmod.recipe.BrewingRecipe;
 import com.github.mclich.engmod.register.ENGBlockEntities;
-import com.github.mclich.engmod.register.ENGRecipeTypes;
+import com.github.mclich.engmod.register.ENGRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -26,10 +25,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import java.util.Arrays;
 
+//fixme: fix empty ItemStack tag on brewery items
 public class BreweryBlockEntity extends BaseContainerBlockEntity
 {
-	public static final int TYPE_BREWERY=15;
-	
 	private final NonNullList<ItemStack> items=NonNullList.withSize(6, ItemStack.EMPTY);
 
 	private boolean[] brewData;
@@ -60,7 +58,7 @@ public class BreweryBlockEntity extends BaseContainerBlockEntity
 				int itemCount=0,
 					burnCount=0,
 					currentMaxBurnCount=12800-breweryEntity.fuelBar*200,
-					fuelBurnTime=ForgeHooks.getBurnTime(fuel, ENGRecipeTypes.getBrewingType());
+					fuelBurnTime=ForgeHooks.getBurnTime(fuel, ENGRecipes.BREWING.get());
 				while(burnCount<currentMaxBurnCount&&itemCount<fuel.getCount())
 				{
 					burnCount+=fuelBurnTime;
@@ -85,7 +83,7 @@ public class BreweryBlockEntity extends BaseContainerBlockEntity
 			}
 			if(breweryEntity.canBrew())
 			{
-				BrewingRecipe recipe=world.getRecipeManager().getRecipeFor(ENGRecipeTypes.getBrewingType(), breweryEntity, world).orElse(null);
+				BrewingRecipe recipe=world.getRecipeManager().getRecipeFor(ENGRecipes.BREWING.get(), breweryEntity, world).orElse(null);
 				breweryEntity.totalBrewTime=recipe.getBrewTime();
 				breweryEntity.brewTime++;
 				if(breweryEntity.brewTime>=recipe.getBrewTime())
@@ -138,7 +136,7 @@ public class BreweryBlockEntity extends BaseContainerBlockEntity
 	private boolean canBrew()
 	{
 		if(!Arrays.equals(this.brewData, new boolean[]{!this.getItem(0).isEmpty(), !this.getItem(1).isEmpty(), !this.getItem(2).isEmpty()})) return false;
-		BrewingRecipe recipe=this.level.getRecipeManager().getRecipeFor(ENGRecipeTypes.getBrewingType(), this, this.level).orElse(null);
+		BrewingRecipe recipe=this.level.getRecipeManager().getRecipeFor(ENGRecipes.BREWING.get(), this, this.level).orElse(null);
 		boolean hasRecipe=recipe!=null,
 				hasFuel=this.fuelBar>0,
 				isResultValid=hasRecipe&&(this.getItem(5).isEmpty()||this.getItem(5).getItem()==recipe.getResultItem().getItem()),
@@ -188,33 +186,32 @@ public class BreweryBlockEntity extends BaseContainerBlockEntity
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag)
+	public void saveAdditional(CompoundTag tag)
 	{
-		super.save(tag);
+		super.saveAdditional(tag);
 		tag.putInt("BrewTime", this.brewTime);
 		tag.putInt("TotalBrewTime", this.totalBrewTime);
 		tag.putFloat("Experience", this.experience);
 		tag.putInt("FuelAmount", this.fuelBar);
 		ContainerHelper.saveAllItems(tag, this.items);
-		return tag;
 	}
 
 	@Override
 	public CompoundTag getUpdateTag()
 	{
-		return this.save(new CompoundTag());
+		return this.saveWithFullMetadata();
 	}
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, BreweryBlockEntity.TYPE_BREWERY, this.getUpdateTag());
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
 	public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet)
 	{
-		if(packet.getType()==BreweryBlockEntity.TYPE_BREWERY) this.handleUpdateTag(packet.getTag());
+		if(packet!=null&&packet.getTag()!=null&&packet.getType()==this.getType()) this.handleUpdateTag(packet.getTag());
 	}
 	
 	public int getBrewTime()
@@ -289,7 +286,7 @@ public class BreweryBlockEntity extends BaseContainerBlockEntity
 	@Override
 	public Component getDefaultName()
 	{
-		return new TranslatableComponent("container.engmod.brewery");
+		return Component.translatable("container.engmod.brewery");
 	}
 
 	@Override

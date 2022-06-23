@@ -2,7 +2,7 @@ package com.github.mclich.engmod.recipe;
 
 import com.github.mclich.engmod.entity.block.BreweryBlockEntity;
 import com.github.mclich.engmod.register.ENGBlocks;
-import com.github.mclich.engmod.register.ENGRecipeTypes;
+import com.github.mclich.engmod.register.ENGRecipes;
 import com.github.mclich.engmod.register.ENGSerializers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -105,12 +105,12 @@ public class BrewingRecipe implements Recipe<BreweryBlockEntity>
 	@Override
 	public RecipeType<?> getType()
 	{
-		return ENGRecipeTypes.getBrewingType();
+		return ENGRecipes.BREWING.get();
 	}
 	
 	@Override
 	public RecipeSerializer<?> getSerializer()
 	{
-		return ENGSerializers.BREWERY_SERIALIZER.get();
+		return ENGSerializers.BREWING_SERIALIZER.get();
 	}
 }

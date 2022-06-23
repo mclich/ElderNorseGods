@@ -1,7 +1,7 @@
 package com.github.mclich.engmod.effect;
 
 import com.github.mclich.engmod.ElderNorseGods;
-import com.github.mclich.engmod.register.ENGEffects;
+import com.github.mclich.engmod.register.ENGMobEffects;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.InstantenousMobEffect;
@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.animal.Panda;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.*;
@@ -45,7 +46,7 @@ public class LossEffect extends InstantenousMobEffect
 
     public static MobEffectInstance getInstance()
     {
-        return new MobEffectInstance(ENGEffects.LOSS.get(), 1);
+        return new MobEffectInstance(ENGMobEffects.LOSS.get(), 1, 0, true, true);
     }
 
     @Override
@@ -58,8 +59,9 @@ public class LossEffect extends InstantenousMobEffect
     public void applyInstantenousEffect(@Nullable Entity potion, @Nullable Entity thrower, LivingEntity entity, int amplifier, double health)
     {
         ThreadLocalRandom random=ThreadLocalRandom.current();
-        if(entity instanceof Player player)                          //probably bagged!!!
+        if(entity instanceof Player player)
         {
+            //fixme: fix duplicate items when added to player's inventory
             Inventory inventory=player.getInventory();
             List<ItemStack> allItems=Stream.of(inventory.items, inventory.armor, inventory.offhand).flatMap(Collection::stream).collect(Collectors.toList());
             List<ItemStack> nonEmptyItems=MethodHandler.obtainNonEmptyItems(allItems);
@@ -70,13 +72,14 @@ public class LossEffect extends InstantenousMobEffect
                 MethodHandler.dropItemAt(randomItem, player);
             }
         }
-        else if(entity instanceof Fox fox)
+        else if(entity instanceof Fox||entity instanceof Panda)
         {
-            ItemStack mouthItem=fox.getItemBySlot(EquipmentSlot.MAINHAND);
-            if(!mouthItem.isEmpty())
+            ItemStack equippedItem=entity.getItemBySlot(EquipmentSlot.MAINHAND);
+            if(!equippedItem.isEmpty())
             {
-                fox.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
-                MethodHandler.dropItemAt(mouthItem, fox);
+                entity.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+                MethodHandler.dropItemAt(equippedItem, entity);
+                if(entity instanceof Panda panda) panda.sit(false);
             }
         }
         else if(entity instanceof Pig||entity instanceof Strider)

@@ -5,7 +5,8 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -24,7 +25,7 @@ public class SpawnParticlesPacket
 	
 	public static void encode(SpawnParticlesPacket packet, FriendlyByteBuf buffer)
 	{
-		buffer.writeRegistryId(packet.particle.getType());
+		buffer.writeRegistryId(ForgeRegistries.PARTICLE_TYPES, packet.particle.getType());
 		buffer.writeUUID(packet.player);
 		buffer.writeInt(packet.lifeTime);
 	}

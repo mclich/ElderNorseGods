@@ -59,9 +59,9 @@ public class ValkyrieEntity extends Monster
 		this.goalSelector.addGoal(i++, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		this.goalSelector.addGoal(i, new RandomLookAroundGoal(this));
 	}
-	
+
 	@Override
-	public int getExperienceReward(Player player)
+	public int getExperienceReward()
 	{
 		return 15;
 	}

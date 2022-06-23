@@ -5,9 +5,9 @@ import com.github.mclich.engmod.block.BreweryBlock;
 import com.github.mclich.engmod.entity.block.BreweryBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public abstract class ENGBlockEntities
 {

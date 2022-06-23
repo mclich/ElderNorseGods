@@ -15,9 +15,9 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.MOD)
 public abstract class ENGBlocks
@@ -44,16 +44,18 @@ public abstract class ENGBlocks
 			ItemBlockRenderTypes.setRenderLayer(ENGBlocks.FROST_HYACINTH_FLOWER.get(), RenderType.cutoutMipped());
 			ItemBlockRenderTypes.setRenderLayer(ENGBlocks.POTTED_FIRE_LILY_FLOWER.get(), RenderType.cutoutMipped());
 			ItemBlockRenderTypes.setRenderLayer(ENGBlocks.POTTED_FROST_HYACINTH_FLOWER.get(), RenderType.cutoutMipped());
+			ElderNorseGods.LOGGER.info("Registering block renderers completed");
 		});
 	}
 	
 	@SubscribeEvent
-    public static void registerFlowerBehavior(FMLCommonSetupEvent event)
+    public static void registerFlowerBehaviour(FMLCommonSetupEvent event)
     {
 		event.enqueueWork(()->
 		{
 			((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(ENGBlocks.FIRE_LILY_FLOWER.getId(), ENGBlocks.POTTED_FIRE_LILY_FLOWER);
 			((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(ENGBlocks.FROST_HYACINTH_FLOWER.getId(), ENGBlocks.POTTED_FROST_HYACINTH_FLOWER);
+			ElderNorseGods.LOGGER.info("Registering flowers behaviour completed");
 		});
     }
 }

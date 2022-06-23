@@ -1,8 +1,8 @@
 package com.github.mclich.engmod.item.staff;
 
+import com.github.mclich.engmod.register.ENGItemTiers;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
 public class RegenerationStaffItem extends PermanentStaffItem
@@ -11,13 +11,7 @@ public class RegenerationStaffItem extends PermanentStaffItem
 
 	public RegenerationStaffItem()
 	{
-		super(Rarity.COMMON, 0x6679F2, 200, 5, 15);
-	}
-
-	@Override
-	public boolean isValidRepairItem(ItemStack staffStack, ItemStack repairStack)
-	{
-		return false;
+		super(ENGItemTiers.NOVICE_STAFF_TIER, 5, 15);
 	}
 	
 	@Override

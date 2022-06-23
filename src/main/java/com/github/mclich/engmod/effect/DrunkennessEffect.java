@@ -1,20 +1,19 @@
 package com.github.mclich.engmod.effect;
 
-import java.util.Random;
 import com.github.mclich.engmod.ElderNorseGods;
-import com.github.mclich.engmod.register.ENGEffects;
+import com.github.mclich.engmod.register.ENGMobEffects;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.player.Input;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.client.player.Input;
-import net.minecraft.util.Mth;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.InputUpdateEvent;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -33,46 +32,32 @@ public class DrunkennessEffect extends MobEffect
 	
 	public static MobEffectInstance getInstance()
 	{
-		return new MobEffectInstance(ENGEffects.DRUNKENNESS.get(), 1260, 0, true, true);
-	}
-
-	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier)
-	{
-		return true;
-	}
-	
-	@Override
-	public void applyEffectTick(LivingEntity entity, int amplifier)
-	{
-		if(entity.getEffect(this).getDuration()%140==0)
-		{
-			//entity.addEffect(new EffectInstance(Effects.CONFUSION, 140, 0, true, false, false));
-		}
+		return new MobEffectInstance(ENGMobEffects.DRUNKENNESS.get(), 1260, 0, true, true);
 	}
 	
 	@EventBusSubscriber(modid=ElderNorseGods.MOD_ID, bus=Bus.FORGE)
 	private static abstract class EventHandler
 	{
+		//fixme: fix camera roll
 		@SubscribeEvent
 		public static void renderFPV(EntityViewRenderEvent.CameraSetup event)
 		{
 			Minecraft mc=Minecraft.getInstance();
-			if(mc.player.hasEffect(ENGEffects.DRUNKENNESS.get()))
+			if(mc.player.hasEffect(ENGMobEffects.DRUNKENNESS.get()))
 			{
-				event.setRoll(5*(float)Math.cos(event.getRenderPartialTicks()));
+				event.setRoll(5*(float)Math.cos(event.getPartialTick()));
 			}
 		}
 		
 		@SubscribeEvent
-		public static void randomWalking(InputUpdateEvent event)
+		public static void randomWalking(MovementInputUpdateEvent event)
 		{
 			Player player=event.getPlayer();
-			Random random=player.getCommandSenderWorld().getRandom();
-			if(player.getCommandSenderWorld().isClientSide()&&player.hasEffect(ENGEffects.DRUNKENNESS.get())&&Mth.nextInt(random, 0, 6)<1)
+			RandomSource random=player.getLevel().getRandom();
+			if(player.getLevel().isClientSide()&&player.hasEffect(ENGMobEffects.DRUNKENNESS.get())&&Mth.nextInt(random, 0, 6)<1)
 		    {
 				int impulse=250;
-				Input moves=event.getMovementInput();
+				Input moves=event.getInput();
 				if(moves.up||moves.down) moves.leftImpulse+=Mth.nextInt(random, -impulse, impulse+1);
 				if(moves.left||moves.right) moves.forwardImpulse+=Mth.nextInt(random, -impulse, impulse+1);
 		    }

@@ -2,22 +2,22 @@ package com.github.mclich.engmod.register;
 
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.enchantment.QuickSwingEnchantment;
-import com.github.mclich.engmod.enchantment.VeinMinerEnchantment;
+import com.github.mclich.engmod.enchantment.VeinMiningEnchantment;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public abstract class ENGEnchantments
 {
 	public static final DeferredRegister<Enchantment> ENCHANTMENTS=DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, ElderNorseGods.MOD_ID);
 	
-	public static final RegistryObject<Enchantment> VEIN_MINER=ENGEnchantments.ENCHANTMENTS.register(VeinMinerEnchantment.ID, VeinMinerEnchantment::new);
+	public static final RegistryObject<Enchantment> VEIN_MINING=ENGEnchantments.ENCHANTMENTS.register(VeinMiningEnchantment.ID, VeinMiningEnchantment::new);
 	public static final RegistryObject<Enchantment> QUICK_SWING=ENGEnchantments.ENCHANTMENTS.register(QuickSwingEnchantment.ID, QuickSwingEnchantment::new);
 
 	public static abstract class Types

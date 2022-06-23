@@ -1,7 +1,7 @@
 package com.github.mclich.engmod.effect;
 
 import com.github.mclich.engmod.register.ENGCapabilities;
-import com.github.mclich.engmod.register.ENGEffects;
+import com.github.mclich.engmod.register.ENGMobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
@@ -19,12 +19,12 @@ public class ReplenishmentEffect extends MobEffect
 	
 	public static MobEffectInstance getInstance()
 	{
-		return new MobEffectInstance(ENGEffects.REPLENISHMENT.get(), 400, 0);
+		return new MobEffectInstance(ENGMobEffects.REPLENISHMENT.get(), 400, 0);
 	}
 	
 	public static MobEffectInstance getActivationInstance()
 	{
-		return new MobEffectInstance(ENGEffects.REPLENISHMENT.get(), 100, 1);
+		return new MobEffectInstance(ENGMobEffects.REPLENISHMENT.get(), 100, 1);
 	}
 	
 	@Override
@@ -36,7 +36,7 @@ public class ReplenishmentEffect extends MobEffect
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier)
 	{
-		if(!entity.getCommandSenderWorld().isClientSide()&&entity instanceof ServerPlayer)
+		if(!entity.getLevel().isClientSide()&&entity instanceof ServerPlayer)
 		{
 			entity.getCapability(ENGCapabilities.MANA).ifPresent
 			(

@@ -3,10 +3,7 @@ package com.github.mclich.engmod.register;
 import com.github.mclich.engmod.ElderNorseGods;
 import com.github.mclich.engmod.block.BreweryBlock;
 import com.github.mclich.engmod.entity.ValkyrieEntity;
-import com.github.mclich.engmod.item.BeerItem;
-import com.github.mclich.engmod.item.CustomSwordItem;
-import com.github.mclich.engmod.item.ManaMixtureItem;
-import com.github.mclich.engmod.item.TotemOfAbyssItem;
+import com.github.mclich.engmod.item.*;
 import com.github.mclich.engmod.item.staff.HealingStaffItem;
 import com.github.mclich.engmod.item.staff.RegenerationStaffItem;
 import com.github.mclich.engmod.item.staff.StaffItem;
@@ -18,14 +15,15 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 @SuppressWarnings("unused")
 public abstract class ENGItems
@@ -42,7 +40,7 @@ public abstract class ENGItems
 	public static final RegistryObject<Item> MANA_MIXTURE=ENGItems.ITEMS.register(ManaMixtureItem.ID, ManaMixtureItem::new);
 	public static final RegistryObject<Item> BARLEY_BREAD=ENGItems.ITEMS.register("barley_bread", ()->new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(5).saturationMod(0.6F).build()).tab(ENGTabs.FOOD)));
 	public static final RegistryObject<Item> TOTEM_OF_ABYSS=ENGItems.ITEMS.register(TotemOfAbyssItem.ID, TotemOfAbyssItem::new);
-	public static final RegistryObject<Item> CUSTOM_SWORD=ENGItems.ITEMS.register(CustomSwordItem.ID, CustomSwordItem::new);
+	public static final RegistryObject<Item> CUSTOM_SWORD=ENGItems.ITEMS.register("custom_sword", ()->new SwordItem(ENGItemTiers.CUSTOM_SWORD_TIER, 6, -2.4F, new Item.Properties().tab(ENGTabs.COMBAT)));
 	public static final RegistryObject<Item> HEALING_STAFF=ENGItems.ITEMS.register(HealingStaffItem.ID, HealingStaffItem::new);
 	public static final RegistryObject<Item> REGENERATION_STAFF=ENGItems.ITEMS.register(RegenerationStaffItem.ID, RegenerationStaffItem::new);
 
@@ -66,6 +64,7 @@ public abstract class ENGItems
 			{
 				ItemProperties.register(ENGItems.HEALING_STAFF.get(), PropsHelper.CASTING, PropsHelper.CASTING_PROP);
 				ItemProperties.register(ENGItems.REGENERATION_STAFF.get(), PropsHelper.CASTING, PropsHelper.CASTING_PROP);
+				ElderNorseGods.LOGGER.info("Registering item properties completed");
 			});
 		}
 	}
